@@ -1,5 +1,5 @@
-from user_repo import UserRepository
-from stock_repository import StockRepository
+from user_repo import UserRepo
+from stock_repo import StockRep
 from auth_service import AuthService
 from stock_service import StockService
 from menus import auth_menu, stock_menu
