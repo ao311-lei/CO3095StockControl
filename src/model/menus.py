@@ -31,3 +31,13 @@ class Menus:
         print("2) Sign up")
         print("0) Back")
         return input("Choose an option: ").strip()
+
+
+
+
+
+def auth_menu(auth_service):
+    pass
+
+def stock_menu(auth_service,stock_service):
+    pass
