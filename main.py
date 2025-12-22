@@ -28,28 +28,6 @@ def stock_menu(menus, auth_service, stock_service):
         else:
             print("Invalid choice. Try again.")
 
-def products_menu(menus, product_service):
-    while True:
-        choice = menus.view_products_menu()
-
-        if choice == "1":
-            print("TODO later: View all products")
-        elif choice == "2":
-            print("TODO later: Search products")
-        elif choice == "3":
-            print("TODO later: Filter products")
-        elif choice == "0":
-            break
-        else:
-            print("Invalid choice. Try again.")
-from Repo.product_repo import ProductRepo
-from Service.product_service import ProductService
-
-
-def main():
-    menus = Menus()
-    product_repo = ProductRepo("products.txt")
-    product_service = ProductService(product_repo, None)
 
 def add_product_menu(product_service):
     sku = input("Enter SKU: ")
@@ -65,11 +43,35 @@ def add_product_menu(product_service):
     result = product_service.add_new_product(sku, name, description, quantity, price, category)
     print(result)
 
+def products_menu(menus, product_service):
+    while True:
+        choice = menus.view_products_menu()
+
+        if choice == "1":
+            print("TODO later: view products")
+        elif choice == "2":
+            print("TODO later: Search products")
+        elif choice == "3":
+            print("TODO later: Filter products")
+        elif choice == "4":
+            add_product_menu(product_service)
+        elif choice == "0":
+            break
+        else:
+            print("Invalid choice. Try again.")
+
+
+def main():
+    menus = Menus()
+
+    product_repo = ProductRepo("products.txt")
+    product_service = ProductService(product_repo, None)
+
     # Service placeholders
     # These will later be replaced with real service objects in other user stories and sprints
     auth_service = None
     stock_service = None
-    product_service = None
+
 
     while True:
         choice = menus.view_main_menu()
