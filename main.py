@@ -26,7 +26,7 @@ def stock_menu(menus, auth_service, stock_service):
             break
         else:
             print("Invalid choice. Try again.")
-            
+
 def products_menu(menus, product_service):
     while True:
         choice = menus.view_products_menu()
@@ -41,6 +41,36 @@ def products_menu(menus, product_service):
             break
         else:
             print("Invalid choice. Try again.")
+
+def main():
+
+    menus = Menus()
+
+    # Service placeholders
+    # These will later be replaced with real service objects in other user stories and sprints
+    auth_service = None
+    stock_service = None
+    product_service = None
+
+    while True:
+        choice = menus.view_main_menu()
+
+        if choice == "1":
+            products_menu(menus, product_service)
+        elif choice == "2":
+            stock_menu(menus, auth_service, stock_service)
+        elif choice == "3":
+            auth_menu(menus, auth_service)
+        elif choice == "0":
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Try again.")
+
+
+if __name__ == "__main__":
+    main()
+
 
 
 
