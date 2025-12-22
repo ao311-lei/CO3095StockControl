@@ -1,4 +1,4 @@
-from model.menus import Menus
+from model.menus import Menus, auth_menu
 from Repo.product_repo import ProductRepo
 from Service.product_service import ProductService
 from Repo.user_repo import UserRepo
