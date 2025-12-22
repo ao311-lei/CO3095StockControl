@@ -17,6 +17,14 @@ class Menus:
         print("0) Back")
         return input("Choose an option: ").strip()
 
+    def view_stock_menu(self):
+        print("\n------------[ STOCK ]-----------")
+        print("1) Record stock increase")
+        print("2) Record stock decrease")
+        print("0) Back")
+        return input("Choose an option: ").strip()
+
+
 
 
 
