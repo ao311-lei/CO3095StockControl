@@ -1,1 +1,2 @@
 SKU001,Apple,fresh apples,10,0.5,fruit
+SKU002,Bowl,handmade bowls,20,3.0,kitchenware
