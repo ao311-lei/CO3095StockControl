@@ -31,3 +31,5 @@ def stock_menu(menus, auth_service, stock_service):
 
 
 
+
+
