@@ -1,4 +1,5 @@
-class StockRepository:
+from model.stock import Stock
+class StockRepo:
     def __init__(self, filename):
         self.filename = filename
 
