@@ -14,6 +14,7 @@ class Menus:
         print("1) View all products")
         print("2) Search products")
         print("3) Filter products")
+        print("4) Add Product")
         print("0) Back")
         return input("Choose an option: ").strip()
 
