@@ -1,4 +1,4 @@
-from user import User
+from model.user import User
 class UserRepo:
     def __init__(self, filename):
         self.filename = filename
