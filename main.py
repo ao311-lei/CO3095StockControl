@@ -1,5 +1,6 @@
 from model.menus import Menus
-
+from Repo.product_repo import ProductRepo
+from Service.product_service import ProductService
 
 def auth_menu(menus, auth_service):
     while True:
@@ -41,10 +42,28 @@ def products_menu(menus, product_service):
             break
         else:
             print("Invalid choice. Try again.")
+from Repo.product_repo import ProductRepo
+from Service.product_service import ProductService
+
 
 def main():
-
     menus = Menus()
+    product_repo = ProductRepo("products.txt")
+    product_service = ProductService(product_repo, None)
+
+def add_product_menu(product_service):
+    sku = input("Enter SKU: ")
+    name = input("Enter name: ")
+    description = input("Enter description: ")
+    quantity = input("Enter quantity: ")
+    price = input("Enter price: ")
+    category = input("Enter category (optional): ")
+
+    if category == "":
+        category = None
+
+    result = product_service.add_new_product(sku, name, description, quantity, price, category)
+    print(result)
 
     # Service placeholders
     # These will later be replaced with real service objects in other user stories and sprints
