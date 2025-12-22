@@ -12,4 +12,3 @@ class Product:
 
     def __str__(self):
         return self.sku + " | " + self.name + " | " + str(self.quantity) + " | £" + str(self.price)
-g
