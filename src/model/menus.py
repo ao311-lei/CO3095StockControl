@@ -24,6 +24,13 @@ class Menus:
         print("0) Back")
         return input("Choose an option: ").strip()
 
+    def view_account_menu(self):
+        print("\n-----------[ ACCOUNT ]----------")
+        print("1) Login")
+        print("2) Sign up")
+        print("0) Back")
+        return input("Choose an option: ").strip()
+
 
 
 
