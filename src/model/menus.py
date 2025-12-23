@@ -32,7 +32,6 @@ class Menus:
         print("0) Back")
         return input("Choose an option: ").strip()
 
-
 def category_menu(category_service):
     print("\n----------[ CATEGORIES ]----------")
     print("1. Create category")
@@ -77,6 +76,7 @@ def category_menu(category_service):
     except ValueError as e:
         # Catch and display validation errors
         print("Error:", e)
+
 
 def auth_menu(auth_service):
     pass
