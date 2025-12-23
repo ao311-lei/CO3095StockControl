@@ -16,7 +16,7 @@ class AuthService:
         if len(password) < 8:
             raise ValueError("Password must be at least 8 characters")
 
-        if self.user_repo.user_exists(username) is not None:
+        if self.user_repo.save_user(user) is not None:
             raise ValueError("Username already exists")
 
 
