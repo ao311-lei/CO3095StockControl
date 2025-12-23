@@ -1,4 +1,4 @@
-from model.menus import Menus, auth_menu
+from model.menus import Menus
 from Repo.product_repo import ProductRepo
 from Service.product_service import ProductService
 from Repo.user_repo import UserRepo
@@ -6,32 +6,8 @@ from Repo.stock_repo import StockRepo
 from Service.auth_service import AuthService
 from Service.stock_service import StockService
 
-def main():
-    user_repo = UserRepo("users.txt")
-    stock_repo = StockRepo("stock.txt")
-    auth_service = AuthService(user_repo)
-    stock_service = StockService(stock_repo)
 
 
-    if auth_service.current_user is not None:
-        stock_menu(auth_service, stock_service)
-
-
-if __name__ == '__main__':
-    main()
-
-def auth_menu(menus, auth_service):
-    while True:
-        choice = menus.view_account_menu()
-
-        if choice == "1":
-            print("TODO later: Login")
-        elif choice == "2":
-            print("TODO later: Sign up")
-        elif choice == "0":
-            break
-        else:
-            print("Invalid choice. Try again.")
 
 def stock_menu(menus, auth_service, stock_service):
     while True:
@@ -81,15 +57,17 @@ def products_menu(menus, product_service):
 
 def main():
     menus = Menus()
-
+    user_repo = UserRepo("users.txt")
+    stock_repo = StockRepo("stocks.txt")
     product_repo = ProductRepo("products.txt")
     product_service = ProductService(product_repo, None)
 
     # Service placeholders
     # These will later be replaced with real service objects in other user stories and sprints
-    auth_service = None
-    stock_service = None
+    auth_service = AuthService(user_repo)
+    stock_service = StockService(stock_repo)
 
+    menus.auth_menu(auth_service)
 
     while True:
         choice = menus.view_main_menu()
@@ -97,9 +75,16 @@ def main():
         if choice == "1":
             products_menu(menus, product_service)
         elif choice == "2":
-            stock_menu(menus, auth_service, stock_service)
+            if auth_service.current_user is None:
+                print("Authorization failed. Please login first.")
+                menus.auth_menu(auth_service)
+            else:
+                stock_menu(menus, auth_service, stock_service)
         elif choice == "3":
-            auth_menu(menus, auth_service)
+            auth_service.logout()
+            print("Logged out successfully.")
+            menus.auth_menu(auth_service)
+
         elif choice == "0":
             print("Goodbye!")
             break

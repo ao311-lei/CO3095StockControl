@@ -25,19 +25,42 @@ class Menus:
         print("0) Back")
         return input("Choose an option: ").strip()
 
-    def view_account_menu(self):
-        print("\n-----------[ ACCOUNT ]----------")
-        print("1) Login")
-        print("2) Sign up")
-        print("0) Back")
-        return input("Choose an option: ").strip()
+    def auth_menu(self,auth_service):
+        while True:
+            print("\n-----------[ ACCOUNT ]----------")
+            print("1. Login")
+            print("2. Sign Up")
+            print("3. Exit")
+
+            choice = input("Choose option: ")
+
+            if choice == "1":
+                username = input("Username: ")
+                password = input("Password: ")
+
+                if auth_service.login(username, password):
+                    print("Login successful")
+                    return
+                else:
+                    print("Invalid username or password")
+
+            elif choice == "2":
+                username = input("Choose username: ")
+                password = input("Choose password: ")
+
+                try:
+                    auth_service.sign_up(username, password)
+                    print("Account created successfully")
+                except ValueError as e:
+                    print("Error:", e)
+
+            elif choice == "3":
+                break
+
+            else:
+                print("Invalid option")
 
 
 
-
-
-def auth_menu(auth_service):
-    pass
-
-def stock_menu(auth_service,stock_service):
+def stock_menu(auth_service, stock_service):
     pass
