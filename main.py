@@ -6,20 +6,7 @@ from Repo.stock_repo import StockRepo
 from Service.auth_service import AuthService
 from Service.stock_service import StockService
 
-def main():
-    user_repo = UserRepo("users.txt")
-    stock_repo = StockRepo("stock.txt")
-    auth_service = AuthService(user_repo)
-    stock_service = StockService(stock_repo)
 
-    auth_menu(auth_service)
-
-    if auth_service.current_user is not None:
-        stock_menu(auth_service, stock_service)
-
-
-if __name__ == '__main__':
-    main()
 
 def auth_menu(menus, auth_service):
     while True:
@@ -69,7 +56,16 @@ def products_menu(menus, product_service):
         if choice == "1":
             print("TODO later: view products")
         elif choice == "2":
-            print("TODO later: Search products")
+            query = input("Please search up desired product by SKU / Name / Description : ")
+            results = product_service.search_products(query)
+
+            if not results:
+                print("No matching products found.")
+            else:
+                print("\n--- Search Results ---")
+                for p in results:
+                    print(f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
+
         elif choice == "3":
             print("TODO later: Filter products")
         elif choice == "4":
@@ -83,15 +79,23 @@ def products_menu(menus, product_service):
 def main():
     menus = Menus()
 
+    user_repo = UserRepo("users.txt")
+    stock_repo = StockRepo("stock.txt")
+    auth_service = AuthService(user_repo)
+    stock_service = StockService(stock_repo)
+
+    # Must pass menus as first argument
+    auth_menu(menus, auth_service)
+
+    if auth_service.current_user is not None:
+        stock_menu(menus, auth_service, stock_service)
+
+
     product_repo = ProductRepo("products.txt")
     product_service = ProductService(product_repo, None)
 
-    # Service placeholders
-    # These will later be replaced with real service objects in other user stories and sprints
-    auth_service = None
-    stock_service = None
 
-
+    # Main navigation loop
     while True:
         choice = menus.view_main_menu()
 
