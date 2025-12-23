@@ -67,7 +67,27 @@ def products_menu(menus, product_service):
                     print(f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
 
         elif choice == "3":
-            print("TODO later: Filter products")
+            category = input("Category (leave blank for all categories): ").strip()
+            max_qty = input("Max quantity (leave blank for no limit): ").strip()
+            sort_by = input("Sort by [name/quantity/price] (leave blank for none): ").strip().lower()
+
+            if sort_by == "":
+                sort_by = None
+            if category == "":
+                category = None
+            if max_qty == "":
+                max_qty = None
+
+            results = product_service.filter_products(category=category, max_qty=max_qty, sort_by=sort_by)
+
+            if not results:
+                print("No products match that filter.")
+            else:
+                print("\n--- Filtered Products ---")
+                for p in results:
+                    print(f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
+
+
         elif choice == "4":
             add_product_menu(product_service)
         elif choice == "0":
