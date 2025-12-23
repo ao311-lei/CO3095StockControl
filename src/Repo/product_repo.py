@@ -10,6 +10,8 @@ class ProductRepo:
         self.load_products()
 
     def load_products(self):
+        self.products = []  # reset to avoid duplicates if called again
+
         try:
             file = open(self.filename, "r")
             lines = file.readlines()
@@ -20,11 +22,11 @@ class ProductRepo:
                 if line != "":
                     parts = line.split(",")
 
-                    sku = parts[0]
-                    name = parts[1]
-                    description = parts[2]
-                    quantity = parts[3]
-                    price = parts[4]
+                    sku = parts[0].strip()
+                    name = parts[1].strip()
+                    description = parts[2].strip()
+                    quantity = int(parts[3].strip())
+                    price = float(parts[4].strip())
 
                     category = None
                     if len(parts) > 5 and parts[5] != "":
