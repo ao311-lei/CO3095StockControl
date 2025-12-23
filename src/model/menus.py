@@ -35,7 +35,7 @@ class Menus:
             choice = input("Choose option: ")
 
             if choice == "1":
-                username = input("Username: ")
+                username = input("Username: ").strip()
                 password = input("Password: ")
 
                 if auth_service.login(username, password):
@@ -45,7 +45,7 @@ class Menus:
                     print("Invalid username or password")
 
             elif choice == "2":
-                username = input("Choose username: ")
+                username = input("Choose username: ").strip()
                 password = input("Choose password: ")
 
                 try:

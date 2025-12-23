@@ -23,7 +23,7 @@ class UserRepo:
         for user in self.load_users():
             if user.username == username:
                 return user
-            return None
+        return None
 
     def save_user(self, user):
         if self.get_user(user.username) is not None:
