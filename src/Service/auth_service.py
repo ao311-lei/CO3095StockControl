@@ -1,5 +1,5 @@
 import hashlib
-from user import User
+from model.user import User
 
 class AuthService:
     def __init__(self, user_repo):
