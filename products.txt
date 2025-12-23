@@ -1,2 +1,12 @@
 SKU001,Apple,fresh apples,10,0.5,fruit
 SKU002,Bowl,handmade bowls,20,3.0,kitchenware
+SKU001,Milk,Semi-skimmed milk 2L,25,1.20,Dairy
+SKU002,Bread,White bread loaf,15,0.90,Bakery
+SKU003,Cheese,Cheddar cheese block 400g,10,3.50,Dairy
+SKU004,Butter,Unsalted butter 250g,8,2.10,Dairy
+SKU005,Apples,Fresh red apples pack,30,2.00,Fruit
+SKU006,Bananas,Ripe bananas bunch,20,1.50,Fruit
+SKU007,Chicken Breast,Fresh chicken breast fillets,12,5.80,Meat
+SKU008,Beef Mince,Lean beef mince 500g,9,4.75,Meat
+SKU009,Orange Juice,Fresh orange juice 1L,18,2.30,Drinks
+SKU010,Water,Still mineral water 1.5L,40,0.80,Drinks

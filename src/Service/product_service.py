@@ -66,5 +66,33 @@ class ProductService:
 
         return results
 
-    def filter_by_category(self, category_name):
-        pass
+    def filter_products(self, category=None, max_qty=None, sort_by=None):
+        products = self.product_repo.get_all_products()
+        results = []
+
+        # Filter by category
+        if category and category.strip() != "":
+            cat = category.strip().lower()
+            for p in products:
+                if p.category is not None and p.category.strip().lower() == cat:
+                    results.append(p)
+        else:
+            results = list(products)
+
+        # Filter by max quantity
+        if max_qty is not None and str(max_qty).strip() != "":
+            try:
+                max_qty = int(max_qty)
+                results = [p for p in results if int(p.quantity) <= max_qty]
+            except:
+                pass
+
+        # Sort
+        if sort_by == "name":
+            results.sort(key=lambda p: str(p.name).lower())
+        elif sort_by == "quantity":
+            results.sort(key=lambda p: int(p.quantity))
+        elif sort_by == "price":
+            results.sort(key=lambda p: float(p.price))
+
+        return results
