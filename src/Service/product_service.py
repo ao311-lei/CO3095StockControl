@@ -49,7 +49,22 @@ class ProductService:
         pass
 
     def search_products(self, query):
-        pass
+
+        q = (query or "").strip().lower()
+        results = []
+
+        if q == "":
+            return results
+
+        for p in self.product_repo.get_all_products():
+            sku = str(p.sku).strip().lower()
+            name = str(p.name).strip().lower()
+            desc = str(p.description).strip().lower()
+
+            if q in sku or q in name or q in desc:
+                results.append(p)
+
+        return results
 
     def filter_by_category(self, category_name):
         pass
