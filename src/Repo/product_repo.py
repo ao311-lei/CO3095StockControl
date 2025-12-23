@@ -60,6 +60,15 @@ class ProductRepo:
         self.products.append(product)
         self.save_products()
 
+    def remove_by_sku(self, sku):
+        # Find index of product with this SKU
+        for i in range(len(self.products)):
+            if self.products[i].sku == sku:
+                del self.products[i]
+                self.save_products()  # update products.txt
+                return True
+        return False
+
     def find_by_sku(self, sku):
         for product in self.products:
             if product.sku == sku:

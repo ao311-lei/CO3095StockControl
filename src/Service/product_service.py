@@ -46,7 +46,18 @@ class ProductService:
         pass
 
     def remove_product(self, sku):
-        pass
+        if sku == "":
+            return "SKU cannot be empty"
+
+        existing = self.product_repo.find_by_sku(sku)
+        if existing == None:
+            return "Product not found"
+
+        removed = self.product_repo.remove_by_sku(sku)
+        if removed:
+            return "Product removed successfully"
+        else:
+            return "Product not found"
 
     def search_products(self, query):
 

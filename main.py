@@ -49,6 +49,12 @@ def add_product_menu(product_service):
     result = product_service.add_new_product(sku, name, description, quantity, price, category)
     print(result)
 
+def remove_product_menu(product_service):
+    sku = input("Enter SKU to remove: ").strip()
+    result = product_service.remove_product(sku)
+    print(result)
+
+
 def products_menu(menus, product_service):
     while True:
         choice = menus.view_products_menu()
@@ -90,6 +96,8 @@ def products_menu(menus, product_service):
 
         elif choice == "4":
             add_product_menu(product_service)
+        elif choice == "5":
+            remove_product_menu(product_service)
         elif choice == "0":
             break
         else:
