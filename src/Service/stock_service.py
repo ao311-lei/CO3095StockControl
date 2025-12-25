@@ -9,4 +9,16 @@ class StockService:
         pass
 
     def record_stock_decrease(self, sku, amount):
-        pass
+        if amount <= 0:
+            raise ValueError("Decrease amount must be a positive integer")
+
+        product = self.product_repo.get_by_sku(sku)
+        if product is None:
+            raise ValueError("Invalid SKU")
+
+        if product.stock < amount:
+            raise ValueError("Insufficient sotck")
+
+        product.stock -= amount
+        self.product_repo.update(product)
+        return product.stock
