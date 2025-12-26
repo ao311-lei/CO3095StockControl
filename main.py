@@ -106,7 +106,15 @@ def products_menu(menus, product_service):
         if choice == "1":
             print("TODO later: view products")
         elif choice == "2":
-            print("TODO later: Search products")
+            query = input("Please search up desired product by SKU / Name / Description : ")
+            results = product_service.search_products(query)
+
+            if not results:
+                print("No matching products found.")
+            else:
+                print("\n--- Search Results ---")
+                for p in results:
+                    print(f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
         elif choice == "3":
             category = input("Category (leave blank for all categories): ").strip()
             max_qty = input("Max quantity (leave blank for no limit): ").strip()
