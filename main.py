@@ -7,21 +7,39 @@ from Service.auth_service import AuthService
 from Service.stock_service import StockService
 
 
-
-
-def stock_menu(menus, auth_service, stock_service):
+def stock_menu(self, auth_service, stock_service):
+    ...
     while True:
-        choice = menus.view_stock_menu()
+        choice = self.view_stock_menu()
 
         if choice == "1":
-            print("TODO later: Record stock increase")
+            sku = input("Enter SKU to increase stock: ").strip()
+            amount_str = input("Enter amount to increase by: ").strip()
+
+            try:
+                amount = int(amount_str)
+                new_qty = stock_service.record_stock_increase(sku, amount)
+                print(f"Stock updated. New quantity for {sku}: {new_qty}")
+            except ValueError as e:
+                print(f"Error: {e}")
+
         elif choice == "2":
-            print("TODO later: Record stock decrease")
+            sku = input("Enter SKU to decrease stock: ").strip()
+            amount_str = input("Enter amount to decrease by: ").strip()
+
+            try:
+                amount = int(amount_str)
+                new_qty = stock_service.record_stock_decrease(sku, amount)
+                print(f"Stock updated. New quantity for {sku}: {new_qty}")
+            except ValueError as e:
+                print(f"Error: {e}")
+
+
         elif choice == "0":
             break
+
         else:
             print("Invalid choice. Try again.")
-
 
 def add_product_menu(product_service):
     sku = input("Enter SKU: ")
@@ -133,7 +151,7 @@ def main():
     # Service placeholders
     # These will later be replaced with real service objects in other user stories and sprints
     auth_service = AuthService(user_repo)
-    stock_service = StockService(stock_repo)
+    stock_service = StockService(product_repo)
 
     menus.auth_menu(auth_service)
 

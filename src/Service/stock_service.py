@@ -25,9 +25,9 @@ class StockService:
         if product is None:
             raise ValueError("Invalid SKU")
 
-        if product.stock < amount:
+        if product.quantity < amount:
             raise ValueError("Insufficient stock")
 
-        product.stock -= amount
+        product.quantity -= amount
         self.product_repo.save_products()
         return product.quantity

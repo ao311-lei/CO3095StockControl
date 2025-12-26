@@ -62,9 +62,6 @@ class Menus:
             else:
                 print("Invalid option")
 
-    def stock_menu(auth_service, stock_service):
-        pass
-
 
 def category_menu(category_service):
     print("\n----------[ CATEGORIES ]----------")
