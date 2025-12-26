@@ -42,6 +42,44 @@ def remove_product_menu(product_service):
     result = product_service.remove_product(sku)
     print(result)
 
+def update_product_menu(product_service):
+    sku = input("Enter SKU to update: ").strip()
+
+    # Find existing product so we can show current values
+    product = product_service.product_repo.find_by_sku(sku)
+    if product == None:
+        print("Product not found")
+        return
+
+    print("Press Enter to keep the current value.")
+
+    name = input("Name (" + product.name + "): ").strip()
+    if name == "":
+        name = product.name
+
+    description = input("Description (" + product.description + "): ").strip()
+    if description == "":
+        description = product.description
+
+    quantity = input("Quantity (" + str(product.quantity) + "): ").strip()
+    if quantity == "":
+        quantity = str(product.quantity)
+
+    price = input("Price (" + str(product.price) + "): ").strip()
+    if price == "":
+        price = str(product.price)
+
+    current_category = ""
+    if product.category != None:
+        current_category = product.category
+
+    category = input("Category (" + current_category + "): ").strip()
+    if category == "":
+        category = product.category  # keep as is (could be None)
+
+    result = product_service.update_product(sku, name, description, quantity, price, category)
+    print(result)
+
 
 def products_menu(menus, product_service):
     while True:
@@ -77,6 +115,8 @@ def products_menu(menus, product_service):
             add_product_menu(product_service)
         elif choice == "5":
             remove_product_menu(product_service)
+        elif choice == "6":
+            update_product_menu(product_service)
         elif choice == "0":
             break
         else:

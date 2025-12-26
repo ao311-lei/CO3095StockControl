@@ -42,8 +42,41 @@ class ProductService:
 
         return "Product added successfully"
 
-    def update_product(self, sku, **updates):
-        pass
+    def update_product(self, sku, name, description, quantity, price, category):
+        if sku == "":
+            return "SKU cannot be empty"
+
+        existing = self.product_repo.find_by_sku(sku)
+        if existing == None:
+            return "Product not found"
+
+        if name == "":
+            return "Name cannot be empty"
+
+        # quantity
+        try:
+            quantity = int(quantity)
+        except:
+            return "Quantity must be a whole number"
+        if quantity < 0:
+            return "Quantity cannot be negative"
+
+        # price
+        try:
+            price = float(price)
+        except:
+            return "Price must be a number"
+        if price < 0:
+            return "Price cannot be negative"
+
+        updated = self.product_repo.update_product(
+            sku, name, description, quantity, price, category
+        )
+
+        if updated:
+            return "Product updated successfully"
+        else:
+            return "Product not found"
 
     def remove_product(self, sku):
         if sku == "":

@@ -69,6 +69,20 @@ class ProductRepo:
                 return True
         return False
 
+    def update_product(self, sku, name, description, quantity, price, category):
+        p = self.find_by_sku(sku)
+        if p == None:
+            return False
+
+        p.name = name
+        p.description = description
+        p.quantity = quantity
+        p.price = price
+        p.category = category
+
+        self.save_products()
+        return True
+
     def find_by_sku(self, sku):
         for product in self.products:
             if product.sku == sku:
@@ -81,8 +95,6 @@ class ProductRepo:
     def remove_product(self, sku):
         pass
 
-    def update_product(self, sku, **updates):
-        pass
 
     def get_all_products(self):
         return self.products

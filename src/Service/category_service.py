@@ -6,7 +6,7 @@ class CategoryService:
         self.category_repo = category_repo
 
     def create_category(self, category_id, name):
-        if name.strip = "":
+        if name.strip == "":
             raise ValueError("Category name cannot be empty")
 
         if self.category_repo.get_by_name(name):
