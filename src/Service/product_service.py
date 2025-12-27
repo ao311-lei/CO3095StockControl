@@ -140,3 +140,21 @@ class ProductService:
             results.sort(key=lambda p: float(p.price))
 
         return results
+
+    def view_all_products_with_status(self, low_stock=5):
+        products = self.product_repo.get_all_products()
+        results = []
+
+        for p in products:
+            qty = int(p.quantity)
+
+            if qty == 0:
+                status = "OUT OF STOCK"
+            elif qty <= low_stock:
+                status = "LOW STOCK"
+            else:
+                status = "IN STOCK"
+
+            results.append((p, status))
+
+        return results
