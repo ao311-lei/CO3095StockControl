@@ -5,6 +5,7 @@ class Menus:
         print("==============================")
         print("1) Products")
         print("2) Stock")
+        print("3) Purchase Orders")
         print("3) Account")
         print("0) Exit")
         return input("Choose an option: ").strip()
@@ -110,7 +111,23 @@ def category_menu(category_service):
         # Catch and display validation errors
         print("Error:", e)
 
+def purchase_orders_menu(self, auth_service, purchase_orders_service):
+    print("\n----------[ PURCHASE ORDERS ]----------")
+    print("1) Create purchase order")
+    print("2) View purchase orders")
+    print("0) Back")
+    return input("Choose an option: ").strip()
 
+    while True:
+        choice = self.view_purchase_orders_menu()
+        if choice == "1":
+            try:
+                user = input("Username: ").strip()
+
+                expected_date = input("Expected delivery date: ").strip()
+
+                lines = []
+                cou
 def auth_menu(auth_service):
     pass
 

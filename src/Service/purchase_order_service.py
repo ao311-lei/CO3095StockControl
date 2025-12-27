@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 from model.purchase_order import PurchaseOrder, PurchaseOrderLine
 from Repo.purchase_order_repo import PurchaseOrderRepo
@@ -46,3 +47,20 @@ class PurchaseOrderService:
         if len(valid_lines) == 0:
             print("Purchase order must have at least one product")
             return
+
+        po_id = "PO" + datetime.now().strftime("%Y%m%d%H%M%S")
+        po = PurchaseOrder(po_id, expected_date, user, "DRAFT")
+
+        line_objects = []
+        for sku, quantity in valid_lines:
+            line_objects.append(PurchaseOrderLine(po_id, sku, quantity))
+
+        self.repo.save_purchase_order(po, line_objects)
+        self.write_audit(f"PO {po_id}, created by {user}")
+        print(f"Purchase order {po_id} created successfully")
+
+    def write_audit(self, message):
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        with open(AUDIT_FILE, "a") as file:
+            file.write(f"{timestamp} {message}\n")
+
