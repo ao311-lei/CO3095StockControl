@@ -13,6 +13,14 @@ def stock_menu(self, auth_service, stock_service):
 
         if choice == "1":
             sku = input("Enter SKU to increase stock: ").strip()
+
+            product = stock_service.product_repo.find_by_sku(sku)
+            if product is None:
+                print("Invalid SKU")
+                continue
+
+            print(f"Current quantity for {sku}: {product.quantity}")
+
             amount_str = input("Enter amount to increase by: ").strip()
 
             try:
@@ -24,6 +32,14 @@ def stock_menu(self, auth_service, stock_service):
 
         elif choice == "2":
             sku = input("Enter SKU to decrease stock: ").strip()
+
+            product = stock_service.product_repo.find_by_sku(sku)
+            if product is None:
+                print("Invalid SKU")
+                continue
+
+            print(f"Current quantity for {sku}: {product.quantity}")
+
             amount_str = input("Enter amount to decrease by: ").strip()
 
             try:
