@@ -34,3 +34,15 @@ class PurchaseOrderService:
 
         valid_lines = []
         for line in product_lines:
+            sku = line['sku']
+            quantity = line['quantity']
+
+            if not self.product_repo.product_active('sku'):
+                print(f"Product {sku} not active")
+                continue
+
+            valid_lines.append((sku, quantity))
+
+        if len(valid_lines) == 0:
+            print("Purchase order must have at least one product")
+            return
