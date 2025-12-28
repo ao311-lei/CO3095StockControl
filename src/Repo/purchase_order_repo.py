@@ -3,8 +3,8 @@ from model.purchase_order import PurchaseOrder, PurchaseOrderLine
 PO_FILE = "purchase_orders.txt"
 
 class PurchaseOrderRepo:
-    def save_purchase_order(sel, purchase_order,lines):
-        with open(PO_FILE,"w+") as file:
+    def save_purchase_order(self, purchase_order,lines):
+        with open(PO_FILE,"a") as file:
             file.write(
                 f"{purchase_order.po_id}|"
                 f"{purchase_order.expected_date}|"
@@ -16,7 +16,7 @@ class PurchaseOrderRepo:
                     f"{line.po_id}|{line.sku}|{line.quantity}\n"
                 )
 
-    def get_purchase_order(self):
+    def get_purchase_orders(self):
         orders = []
 
         try:

@@ -7,7 +7,7 @@ from Repo.product_repo import ProductRepo
 class PurchaseOrderService:
     def __init__(self):
         self.repo = PurchaseOrderRepo()
-        self.product_repo = ProductRepo()
+        self.product_repo = ProductRepo('products.txt')
 
     def validate_date(self, date_string):
         try:
@@ -59,8 +59,13 @@ class PurchaseOrderService:
         self.write_audit(f"PO {po_id}, created by {user}")
         print(f"Purchase order {po_id} created successfully")
 
+    def get_purchase_order(self):
+        return self.repo.get_purchase_order()
+
     def write_audit(self, message):
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         with open(AUDIT_FILE, "a") as file:
             file.write(f"{timestamp} {message}\n")
+
+
 
