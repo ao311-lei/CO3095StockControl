@@ -5,7 +5,8 @@ class Menus:
         print("==============================")
         print("1) Products")
         print("2) Stock")
-        print("3) Account")
+        print("3) Purchase Orders")
+        print("4) Account")
         print("0) Exit")
         return input("Choose an option: ").strip()
 
@@ -17,7 +18,8 @@ class Menus:
         print("4) Add Product")
         print("5) Remove Product")
         print("6) Update Product")
-        print("7) View favourite products")
+        print("7) Low Stock Alerts")
+        print("8) View favourite products")
         print("0) Back")
         return input("Choose an option: ").strip()
 
@@ -62,6 +64,13 @@ class Menus:
 
             else:
                 print("Invalid option")
+
+    def view_purchase_orders_menu(purchase_orders_service):
+        print("\n----------[ PURCHASE ORDERS ]----------")
+        print("1) Create purchase order")
+        print("2) View purchase orders")
+        print("0) Back")
+        return input("Choose an option: ").strip()
 
 
 def category_menu(category_service):

@@ -158,3 +158,23 @@ class ProductService:
             results.append((p, status))
 
         return results
+
+    def get_low_stock_products(self, threshold):
+        low_stock = []
+
+        # basic validation
+        try:
+            threshold = int(threshold)
+        except:
+            return None  # invalid threshold
+
+        if threshold < 0:
+            return None
+
+        products = self.product_repo.get_all_products()
+
+        for p in products:
+            if p.quantity < threshold:
+                low_stock.append(p)
+
+        return low_stock
