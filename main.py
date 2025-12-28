@@ -8,12 +8,19 @@ from Service.stock_service import StockService
 
 
 def stock_menu(self, auth_service, stock_service):
-    ...
     while True:
         choice = self.view_stock_menu()
 
         if choice == "1":
             sku = input("Enter SKU to increase stock: ").strip()
+
+            product = stock_service.product_repo.find_by_sku(sku)
+            if product is None:
+                print("Invalid SKU")
+                continue
+
+            print(f"Current quantity for {sku}: {product.quantity}")
+
             amount_str = input("Enter amount to increase by: ").strip()
 
             try:
@@ -25,6 +32,14 @@ def stock_menu(self, auth_service, stock_service):
 
         elif choice == "2":
             sku = input("Enter SKU to decrease stock: ").strip()
+
+            product = stock_service.product_repo.find_by_sku(sku)
+            if product is None:
+                print("Invalid SKU")
+                continue
+
+            print(f"Current quantity for {sku}: {product.quantity}")
+
             amount_str = input("Enter amount to decrease by: ").strip()
 
             try:
@@ -104,7 +119,31 @@ def products_menu(menus, product_service):
         choice = menus.view_products_menu()
 
         if choice == "1":
-            print("TODO later: view products")
+            threshold_str = input("Enter a low stock threshold (default 5): ").strip()
+            if threshold_str == "":
+                threshold = 5
+            else:
+                try:
+                    threshold = int(threshold_str)
+                except ValueError:
+                    print("Invalid threshold. Using default of 5.")
+                    threshold = 5
+
+            items = product_service.view_all_products_with_status(low_stock=threshold)
+
+            if not items:
+                print("No products found.")
+            else:
+                print("\n--- All Products (Inventory Status) ---")
+                for p, status in items:
+                    label = status
+                    if status == "LOW STOCK":
+                        label = "LOW STOCK !"
+                    elif status == "OUT OF STOCK":
+                        label = "OUT OF STOCK !!"
+
+                    print(f"{p.sku} | {p.name} | Qty: {p.quantity} | £{p.price} | {p.category} | {label}")
+
         elif choice == "2":
             query = input("Please search up desired product by SKU / Name / Description : ")
             results = product_service.search_products(query)

@@ -1,6 +1,6 @@
-SKU001,Milk,Semi-skimmed milk 1L,0,1.2,Dairy
+SKU001,Milk,Semi-skimmed milk 1L,1,1.2,Dairy
 SKU002,Bread,White bread loaf,15,0.9,Bakery
-SKU003,Cheese,Cheddar cheese block 400g,10,3.5,Dairy
+SKU003,Cheese,Cheddar cheese block 400g,17,3.5,Dairy
 SKU004,Butter,Unsalted butter 250g,8,2.1,Dairy
 SKU005,Apples,Fresh red apples pack,30,2.0,Fruit
 SKU006,Bananas,Ripe bananas bunch,20,1.5,Fruit
