@@ -7,54 +7,21 @@ from Service.auth_service import AuthService
 from Service.stock_service import StockService
 
 
-def stock_menu(self, auth_service, stock_service):
+
+
+def stock_menu(menus, auth_service, stock_service):
     while True:
-        choice = self.view_stock_menu()
+        choice = menus.view_stock_menu()
 
         if choice == "1":
-            sku = input("Enter SKU to increase stock: ").strip()
-
-            product = stock_service.product_repo.find_by_sku(sku)
-            if product is None:
-                print("Invalid SKU")
-                continue
-
-            print(f"Current quantity for {sku}: {product.quantity}")
-
-            amount_str = input("Enter amount to increase by: ").strip()
-
-            try:
-                amount = int(amount_str)
-                new_qty = stock_service.record_stock_increase(sku, amount)
-                print(f"Stock updated. New quantity for {sku}: {new_qty}")
-            except ValueError as e:
-                print(f"Error: {e}")
-
+            print("TODO later: Record stock increase")
         elif choice == "2":
-            sku = input("Enter SKU to decrease stock: ").strip()
-
-            product = stock_service.product_repo.find_by_sku(sku)
-            if product is None:
-                print("Invalid SKU")
-                continue
-
-            print(f"Current quantity for {sku}: {product.quantity}")
-
-            amount_str = input("Enter amount to decrease by: ").strip()
-
-            try:
-                amount = int(amount_str)
-                new_qty = stock_service.record_stock_decrease(sku, amount)
-                print(f"Stock updated. New quantity for {sku}: {new_qty}")
-            except ValueError as e:
-                print(f"Error: {e}")
-
-
+            print("TODO later: Record stock decrease")
         elif choice == "0":
             break
-
         else:
             print("Invalid choice. Try again.")
+
 
 def add_product_menu(product_service):
     sku = input("Enter SKU: ")
@@ -75,103 +42,15 @@ def remove_product_menu(product_service):
     result = product_service.remove_product(sku)
     print(result)
 
-def update_product_menu(product_service):
-    sku = input("Enter SKU to update: ").strip()
-
-    # Find existing product so we can show current values
-    product = product_service.product_repo.find_by_sku(sku)
-    if product == None:
-        print("Product not found")
-        return
-
-    print("Press Enter to keep the current value.")
-
-    name = input("Name (" + product.name + "): ").strip()
-    if name == "":
-        name = product.name
-
-    description = input("Description (" + product.description + "): ").strip()
-    if description == "":
-        description = product.description
-
-    quantity = input("Quantity (" + str(product.quantity) + "): ").strip()
-    if quantity == "":
-        quantity = str(product.quantity)
-
-    price = input("Price (" + str(product.price) + "): ").strip()
-    if price == "":
-        price = str(product.price)
-
-    current_category = ""
-    if product.category != None:
-        current_category = product.category
-
-    category = input("Category (" + current_category + "): ").strip()
-    if category == "":
-        category = product.category  # keep as is (could be None)
-
-    result = product_service.update_product(sku, name, description, quantity, price, category)
-    print(result)
-
-
-
-def low_stock_alerts_menu(product_service):
-    threshold = input("Enter low stock threshold (e.g. 5): ").strip()
-
-    low_stock = product_service.get_low_stock_products(threshold)
-
-    if low_stock == None:
-        print("Threshold must be a whole number (0 or more).")
-        return
-
-    if len(low_stock) == 0:
-        print("No low stock alerts. All products are above the threshold.")
-    else:
-        print("\n!! LOW STOCK ALERTS !!")
-        for p in low_stock:
-            print(p.sku + " - " + p.name + " (Qty: " + str(p.quantity) + ")")
-
 
 def products_menu(menus, product_service):
     while True:
         choice = menus.view_products_menu()
 
         if choice == "1":
-            threshold_str = input("Enter a low stock threshold (default 5): ").strip()
-            if threshold_str == "":
-                threshold = 5
-            else:
-                try:
-                    threshold = int(threshold_str)
-                except ValueError:
-                    print("Invalid threshold. Using default of 5.")
-                    threshold = 5
-
-            items = product_service.view_all_products_with_status(low_stock=threshold)
-
-            if not items:
-                print("No products found.")
-            else:
-                print("\n--- All Products (Inventory Status) ---")
-                for p, status in items:
-                    label = status
-                    if status == "LOW STOCK":
-                        label = "LOW STOCK !"
-                    elif status == "OUT OF STOCK":
-                        label = "OUT OF STOCK !!"
-
-                    print(f"{p.sku} | {p.name} | Qty: {p.quantity} | £{p.price} | {p.category} | {label}")
-
+            print("TODO later: view products")
         elif choice == "2":
-            query = input("Please search up desired product by SKU / Name / Description : ")
-            results = product_service.search_products(query)
-
-            if not results:
-                print("No matching products found.")
-            else:
-                print("\n--- Search Results ---")
-                for p in results:
-                    print(f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
+            print("TODO later: Search products")
         elif choice == "3":
             category = input("Category (leave blank for all categories): ").strip()
             max_qty = input("Max quantity (leave blank for no limit): ").strip()
@@ -198,10 +77,6 @@ def products_menu(menus, product_service):
             add_product_menu(product_service)
         elif choice == "5":
             remove_product_menu(product_service)
-        elif choice == "6":
-            update_product_menu(product_service)
-        elif choice == "7":
-            low_stock_alerts_menu(product_service)
         elif choice == "0":
             break
         else:
@@ -218,7 +93,7 @@ def main():
     # Service placeholders
     # These will later be replaced with real service objects in other user stories and sprints
     auth_service = AuthService(user_repo)
-    stock_service = StockService(product_repo)
+    stock_service = StockService(stock_repo)
 
     menus.auth_menu(auth_service)
 
