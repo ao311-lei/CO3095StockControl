@@ -5,11 +5,30 @@ from Repo.user_repo import UserRepo
 from Repo.stock_repo import StockRepo
 from Service.auth_service import AuthService
 from Service.stock_service import StockService
+from Repo.favourite_repo import FavouriteRepo
+from Service.favourite_service import FavouriteService
 
 
-def stock_menu(self, auth_service, stock_service):
+def show_products_and_favourite(products, favourite_service):
+    if not products:
+        print("No products found.")
+        return
+
+    print("\n--- Products ---")
+    for p in products:
+        print(f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
+
     while True:
-        choice = self.view_stock_menu()
+        sku = input("Enter SKU to favourite (or press Enter to go back): ").strip()
+        if sku == "":
+            break
+        print(favourite_service.favourite_product(sku))
+
+
+
+def stock_menu(menus, auth_service, stock_service):
+    while True:
+        choice = menus.view_stock_menu()
 
         if choice == "1":
             sku = input("Enter SKU to increase stock: ").strip()
@@ -113,8 +132,17 @@ def update_product_menu(product_service):
     result = product_service.update_product(sku, name, description, quantity, price, category)
     print(result)
 
+def favourite_prompt(favourite_service):
 
-def products_menu(menus, product_service):
+    while True:
+        sku = input("Enter SKU to favourite (or press Enter to go back): ").strip()
+        if sku == "":
+            break
+        print(favourite_service.favourite_product(sku))
+
+
+
+def products_menu(menus, product_service,favourite_service, auth_service):
     while True:
         choice = menus.view_products_menu()
 
@@ -144,6 +172,9 @@ def products_menu(menus, product_service):
 
                     print(f"{p.sku} | {p.name} | Qty: {p.quantity} | £{p.price} | {p.category} | {label}")
 
+                print("\n--- Add Favourite Products ---")
+                favourite_prompt(favourite_service)
+
         elif choice == "2":
             query = input("Please search up desired product by SKU / Name / Description : ")
             results = product_service.search_products(query)
@@ -154,6 +185,10 @@ def products_menu(menus, product_service):
                 print("\n--- Search Results ---")
                 for p in results:
                     print(f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
+
+                print("\n--- Add Favourite Products ---")
+                favourite_prompt(favourite_service)
+
         elif choice == "3":
             category = input("Category (leave blank for all categories): ").strip()
             max_qty = input("Max quantity (leave blank for no limit): ").strip()
@@ -175,6 +210,9 @@ def products_menu(menus, product_service):
                 for p in results:
                     print(f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
 
+                print("\n--- Add Favourite Products ---")
+                favourite_prompt(favourite_service)
+
 
         elif choice == "4":
             add_product_menu(product_service)
@@ -182,6 +220,23 @@ def products_menu(menus, product_service):
             remove_product_menu(product_service)
         elif choice == "6":
             update_product_menu(product_service)
+        elif choice == "7":
+            favourite_products, error_message = favourite_service.get_favourites()
+
+            if error_message is not None:
+                print(error_message)
+            elif not favourite_products:
+                print("No favourites yet.")
+            else:
+                print("\n--- Favourite Products ---")
+                for p in favourite_products:
+                    print(
+                        f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
+
+                print("\n--- Add Favourite Products ---")
+                favourite_prompt(favourite_service)
+
+
         elif choice == "0":
             break
         else:
@@ -193,12 +248,12 @@ def main():
     user_repo = UserRepo("users.txt")
     stock_repo = StockRepo("stocks.txt")
     product_repo = ProductRepo("products.txt")
-    product_service = ProductService(product_repo, None)
+    favourite_repo = FavouriteRepo("favourites.txt")
 
-    # Service placeholders
-    # These will later be replaced with real service objects in other user stories and sprints
     auth_service = AuthService(user_repo)
+    product_service = ProductService(product_repo, None)
     stock_service = StockService(product_repo)
+    favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
 
     menus.auth_menu(auth_service)
 
@@ -206,7 +261,7 @@ def main():
         choice = menus.view_main_menu()
 
         if choice == "1":
-            products_menu(menus, product_service)
+            products_menu(menus, product_service, favourite_service, auth_service)
         elif choice == "2":
             if auth_service.current_user is None:
                 print("Authorization failed. Please login first.")

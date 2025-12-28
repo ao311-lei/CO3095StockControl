@@ -1,0 +1,6 @@
+anettaxo,SKU001
+anettaxo,SKU004
+anettaxo,SKU003
+anettaxo,SKU009
+anettaxo,SKU006
+anettaxo,SKU002
