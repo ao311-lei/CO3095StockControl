@@ -90,8 +90,6 @@ def main():
     product_repo = ProductRepo("products.txt")
     product_service = ProductService(product_repo, None)
 
-    # Service placeholders
-    # These will later be replaced with real service objects in other user stories and sprints
     auth_service = AuthService(user_repo)
     stock_service = StockService(stock_repo)
 
