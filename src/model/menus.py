@@ -127,7 +127,33 @@ def purchase_orders_menu(self, auth_service, purchase_orders_service):
                 expected_date = input("Expected delivery date: ").strip()
 
                 lines = []
-                cou
+                count = int(input("How many product lines: ").strip())
+
+                for i in range(count):
+                    print(f"/n {i+1}:")
+                    sku = input("SKU: ").strip()
+                    quantity = input("Quantity: ").strip()
+                    lines.append(f"{sku} {quantity}")
+
+                purchase_orders_service.create_purchase_order(user, expected_date, lines)
+
+            except ValueError:
+                print("Invalid input")
+        elif choice == "2":
+            orders = purchase_orders_service.get_purchase_orders()
+            if len(orders) == 0:
+                print("No purchase orders found")
+            else:
+                print("\n=== Purchase Orders ===")
+                for po in orders:
+                    print(f"{po.po_id} | Supplier: {po.supplier_id} | ETA: {po.expected_date} | "
+                          f"User: {po.created_by} | Status: {po.status}")
+
+        elif choice == "0":
+            return
+        else:
+            print("Invalid option")
+
 def auth_menu(auth_service):
     pass
 
