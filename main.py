@@ -233,8 +233,14 @@ def products_menu(menus, product_service,favourite_service, auth_service):
                     print(
                         f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
 
-                print("\n--- Add Favourite Products ---")
+                print("\n--- Add and Remove Favourite Products ---")
                 favourite_prompt(favourite_service)
+
+                while True:
+                    sku = input("\nEnter SKU to unfavourite (or press Enter to go back): ").strip()
+                    if sku == "":
+                        break
+                    print(favourite_service.unfavourite_product(sku))
 
 
         elif choice == "0":

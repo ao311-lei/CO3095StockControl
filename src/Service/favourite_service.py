@@ -45,3 +45,19 @@ class FavouriteService:
                 products.append(product)
 
         return products, None
+
+    def unfavourite_product(self, sku):
+        username = self._get_username()
+        if username is None:
+            return "You must be logged in to unfavourite products."
+
+        sku = sku.strip()
+        if sku == "":
+            return "SKU cannot be empty."
+
+        if not self.favourite_repo.is_favourite(username, sku):
+            return "This product is not in your favourites."
+
+        self.favourite_repo.remove_favourite(username, sku)
+        return "Product removed from favourites."
+
