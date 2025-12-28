@@ -217,6 +217,8 @@ def products_menu(menus, product_service,favourite_service, auth_service):
             remove_product_menu(product_service)
         elif choice == "6":
             update_product_menu(product_service)
+        elif choice == "7":
+            low_stock_alerts_menu(product_service)
         elif choice == "8":
             favourite_products, error_message = favourite_service.get_favourites()
 
