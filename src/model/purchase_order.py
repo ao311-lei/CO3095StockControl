@@ -10,3 +10,11 @@ class PurchaseOrderLine:
         self.po_id = po_id
         self.sku = sku
         self.quantity = quantity
+
+class POStatus:
+    CREATED = 'CREATED'
+    APPROVED = 'APPROVED'
+    COMPLETED = 'COMPLETED'
+    CANCELLED = 'CANCELLED'
+
+    ALL = (CREATED, APPROVED, COMPLETED, CANCELLED)
