@@ -17,6 +17,7 @@ class Menus:
         print("4) Add Product")
         print("5) Remove Product")
         print("6) Update Product")
+        print("7) Low Stock Alerts")
         print("0) Back")
         return input("Choose an option: ").strip()
 

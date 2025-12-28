@@ -114,6 +114,24 @@ def update_product_menu(product_service):
     print(result)
 
 
+
+def low_stock_alerts_menu(product_service):
+    threshold = input("Enter low stock threshold (e.g. 5): ").strip()
+
+    low_stock = product_service.get_low_stock_products(threshold)
+
+    if low_stock == None:
+        print("Threshold must be a whole number (0 or more).")
+        return
+
+    if len(low_stock) == 0:
+        print("No low stock alerts. All products are above the threshold.")
+    else:
+        print("\n!! LOW STOCK ALERTS !!")
+        for p in low_stock:
+            print(p.sku + " - " + p.name + " (Qty: " + str(p.quantity) + ")")
+
+
 def products_menu(menus, product_service):
     while True:
         choice = menus.view_products_menu()
@@ -182,6 +200,8 @@ def products_menu(menus, product_service):
             remove_product_menu(product_service)
         elif choice == "6":
             update_product_menu(product_service)
+        elif choice == "7":
+            low_stock_alerts_menu(product_service)
         elif choice == "0":
             break
         else:
