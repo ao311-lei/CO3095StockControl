@@ -137,6 +137,9 @@ def purchase_orders_menu(menus, auth_service, purchase_order_service):
         else:
             print("Invalid choice. Try again.")
 
+def summary_dashboard_menu(product_service):
+    print("\n[DASHBOARD] Coming soon...\n")
+
 
 def main():
     menus = Menus()
@@ -170,7 +173,8 @@ def main():
             auth_service.logout()
             print("Logged out successfully.")
             menus.auth_menu(auth_service)
-
+        elif choice == "5":
+            summary_dashboard_menu(product_service)
         elif choice == "0":
             print("Goodbye!")
             break
