@@ -6,7 +6,7 @@ class Menus:
         print("1) Products")
         print("2) Stock")
         print("3) Purchase Orders")
-        print("3) Account")
+        print("4) Account")
         print("0) Exit")
         return input("Choose an option: ").strip()
 
