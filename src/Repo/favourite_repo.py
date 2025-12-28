@@ -41,3 +41,14 @@ class FavouriteRepo:
                 favourites.append(sku)
         return favourites
 
+    def remove_favourite(self, username, sku):
+        favourites = self.load_all()
+        new_favourites = []
+
+        for u, s in favourites:
+            if not (u == username and s == sku):
+                new_favourites.append((u, s))
+
+        self.save_all(new_favourites)
+
+
