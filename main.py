@@ -8,6 +8,9 @@ from Service.stock_service import StockService
 from Service.purchase_order_service import PurchaseOrderService
 from Repo.favourite_repo import FavouriteRepo
 from Service.favourite_service import FavouriteService
+from Repo.return_repo import ReturnRepo
+from Service.return_service import ReturnService
+
 
 def press_enter_to_go_back():
     input("\nPress Enter to go back...")
@@ -389,6 +392,22 @@ def summary_dashboard_menu(product_service, low_stock_threshold):
     print("==============================\n")
     input("Press Enter to go back...")
 
+def returns_menu(return_service):
+    print("\n----------[ RETURNS ]----------")
+    print("Accepted conditions for restock: sealed, unopened, resellable")
+    print("Press Enter on SKU to go back.\n")
+
+    while True:
+        sku = input("Enter SKU to return (or press Enter to go back): ").strip()
+        if sku == "":
+            break
+
+        qty = input("Enter quantity: ").strip()
+        condition = input("Enter condition (sealed/unopened/resellable/damaged/used): ").strip()
+
+        result = return_service.process_return(sku, qty, condition)
+        print(result)
+
 
 def main():
     menus = Menus()
@@ -396,12 +415,15 @@ def main():
     stock_repo = StockRepo("stocks.txt")
     product_repo = ProductRepo("products.txt")
     favourite_repo = FavouriteRepo("favourites.txt")
+    return_repo = ReturnRepo("returns.txt")
 
     auth_service = AuthService(user_repo)
-    product_service = ProductService(product_repo, None)
+    category_repo = None
+    product_service = ProductService(product_repo, category_repo)
     stock_service = StockService(product_repo)
     favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
-    stock_service = StockService(stock_repo)
+    #stock_service = StockService(stock_repo)
+    return_service = ReturnService(product_repo, stock_service, return_repo)
 
     purchase_order_service = PurchaseOrderService()
 
@@ -429,6 +451,8 @@ def main():
             menus.auth_menu(auth_service)
         elif choice == "5":
             summary_dashboard_menu(product_service, low_stock_threshold)
+        elif choice == "6":
+            returns_menu(return_service)
         elif choice == "0":
             print("Goodbye!")
             break

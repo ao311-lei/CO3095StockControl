@@ -1,5 +1,5 @@
 SKU001,Milk,Semi-skimmed milk 1L,20,1.2,Dairy,INACTIVE
-SKU002,Bread,White bread loaf,15,0.9,Bakery,ACTIVE
+SKU002,Bread,White bread loaf,16,0.9,Bakery,ACTIVE
 SKU003,Cheese,Cheddar cheese block 400g,17,3.5,Dairy,INACTIVE
 SKU004,Butter,Unsalted butter 250g,8,2.1,Dairy,INACTIVE
 SKU005,Apples,Fresh red apples pack,30,2.0,Fruit,ACTIVE

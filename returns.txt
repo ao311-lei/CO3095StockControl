@@ -1,0 +1,8 @@
+1|SKU002|2|sealed|REJECTED|'StockRepo' object has no attribute 'find_by_sku'
+2|SKU001|1|unopened|REJECTED|Product is inactive
+3|SKU001|1|sealed|REJECTED|Product is inactive
+4|SKU002|1|sealed|REJECTED|'StockRepo' object has no attribute 'find_by_sku'
+5|SKU005|1|damaged|REJECTED|Condition not accepted for restock
+6|SKU005|1|sealed|REJECTED|'StockRepo' object has no attribute 'find_by_sku'
+1|SKU001|1|sealed|REJECTED|Product is inactive
+2|SKU002|1|sealed|ADDED_TO_STOCK|Added back into stock
