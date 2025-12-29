@@ -189,8 +189,7 @@ def set_low_stock_threshold(current_threshold):
         return current_threshold
 
 
-def products_menu(menus, product_service,favourite_service, auth_service):
-    low_stock_threshold = 5  # default shared threshold for this session
+def products_menu(menus, product_service,favourite_service, auth_service, low_stock_threshold):
 
     while True:
         choice = menus.view_products_menu()
@@ -315,7 +314,7 @@ def products_menu(menus, product_service,favourite_service, auth_service):
 
 
         elif choice == "0":
-            break
+            return low_stock_threshold
         else:
             print("Invalid choice. Try again.")
 
@@ -374,14 +373,16 @@ def purchase_orders_menu(menus, auth_service, purchase_order_service):
         else:
             print("Invalid choice. Try again.")
 
-def summary_dashboard_menu(product_service):
-    summary = product_service.get_dashboard_summary()
+def summary_dashboard_menu(product_service, low_stock_threshold):
+
+    summary = product_service.get_dashboard_summary(low_stock_threshold)
 
     print("\n==============================")
     print("       [ DASHBOARD ]")
     print("==============================")
     print("Total products:", summary["total_products"])
     print("Total units in stock:", summary["total_units"])
+    print("Low stock items (< " + str(summary["threshold"]) + "):", summary["low_stock_count"])
     print("==============================\n")
     input("Press Enter to go back...")
 
@@ -402,12 +403,15 @@ def main():
     purchase_order_service = PurchaseOrderService()
 
     menus.auth_menu(auth_service)
+    low_stock_threshold = 5
 
     while True:
         choice = menus.view_main_menu()
 
         if choice == "1":
-            products_menu(menus, product_service, favourite_service, auth_service)
+            low_stock_threshold = products_menu(
+                menus, product_service, favourite_service, auth_service, low_stock_threshold
+            )
         elif choice == "2":
             if auth_service.current_user is None:
                 print("Authorization failed. Please login first.")
@@ -421,7 +425,7 @@ def main():
             print("Logged out successfully.")
             menus.auth_menu(auth_service)
         elif choice == "5":
-            summary_dashboard_menu(product_service)
+            summary_dashboard_menu(product_service, low_stock_threshold)
         elif choice == "0":
             print("Goodbye!")
             break

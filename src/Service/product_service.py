@@ -226,17 +226,28 @@ class ProductService:
 
         return low_stock
 
-    def get_dashboard_summary(self):
+    def get_dashboard_summary(self, threshold=5):
         products = self.product_repo.get_all_products()
 
         total_products = len(products)
         total_units = 0
+        low_stock_count = 0
+        out_of_stock_count = 0
 
         for p in products:
-            total_units += int(p.quantity)
+            qty = int(p.quantity)
+            total_units += qty
+
+            if qty == 0:
+                out_of_stock_count += 1
+            elif qty < threshold:
+                low_stock_count += 1
 
         return {
             "total_products": total_products,
-            "total_units": total_units
+            "total_units": total_units,
+            "low_stock_count": low_stock_count,
+            "out_of_stock_count": out_of_stock_count,
+            "threshold": threshold
         }
 
