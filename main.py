@@ -77,18 +77,23 @@ def stock_menu(menus, auth_service, stock_service):
             print("Invalid choice. Try again.")
 
 def add_product_menu(product_service):
-    sku = input("Enter SKU: ")
-    name = input("Enter name: ")
-    description = input("Enter description: ")
-    quantity = input("Enter quantity: ")
-    price = input("Enter price: ")
-    category = input("Enter category (optional): ")
+    while True:
+        sku = input("Enter SKU (or press Enter to go back): ").strip()
+        if sku == "":
+            break
 
-    if category == "":
-        category = None
+        name = input("Enter name: ").strip()
+        description = input("Enter description: ").strip()
+        quantity = input("Enter quantity: ").strip()
+        price = input("Enter price: ").strip()
+        category = input("Enter category (optional): ").strip()
 
-    result = product_service.add_new_product(sku, name, description, quantity, price, category)
-    print(result)
+        if category == "":
+            category = None
+
+        result = product_service.add_new_product(sku, name, description, quantity, price, category)
+        print(result)
+
 
 def remove_product_menu(product_service):
     sku = input("Enter SKU to remove: ").strip()
