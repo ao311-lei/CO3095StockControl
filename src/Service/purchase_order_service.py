@@ -1,8 +1,9 @@
 import uuid
 from datetime import datetime
-from model.purchase_order import PurchaseOrder, PurchaseOrderLine
+from model.purchase_order import PurchaseOrder, PurchaseOrderLine, POStatus
 from Repo.purchase_order_repo import PurchaseOrderRepo
 from Repo.product_repo import ProductRepo
+
 
 class PurchaseOrderService:
     def __init__(self):
@@ -66,6 +67,25 @@ class PurchaseOrderService:
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         with open(AUDIT_FILE, "a") as file:
             file.write(f"{timestamp} {message}\n")
+
+
+    def is_valid_transition(self, current, new):
+        if current in [POStatus.COMPLETED, POStatus.CANCELLED]:
+            return False
+
+        if current == POStatus.CREATED:
+            return new in [POStatus.APPROVED, POStatus.CANCELLED]
+
+        if current == POStatus.APPROVED:
+            return new in [POStatus.PARTIAL, POStatus.CANCELLED]
+
+        if current == POStatus.PARTIAL:
+            return new in [POStatus.COMPLETED, POStatus.CANCELLED]
+
+        return False
+
+    def update_po_
+
 
 
 

@@ -13,6 +13,7 @@ class PurchaseOrderLine:
 
 class POStatus:
     CREATED = 'CREATED'
+    PARTIAL = 'PARTIAL'
     APPROVED = 'APPROVED'
     COMPLETED = 'COMPLETED'
     CANCELLED = 'CANCELLED'
