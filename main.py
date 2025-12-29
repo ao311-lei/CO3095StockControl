@@ -140,12 +140,10 @@ def favourite_prompt(favourite_service):
         print(favourite_service.favourite_product(sku))
 
 
-def low_stock_alerts_menu(product_service):
-    threshold = input("Enter low stock threshold (e.g. 5): ").strip()
+def low_stock_alerts_menu(product_service, low_stock_threshold):
+    low_stock = product_service.get_low_stock_products(low_stock_threshold)
 
-    low_stock = product_service.get_low_stock_products(threshold)
-
-    if low_stock == None:
+    if low_stock is None:
         print("Threshold must be a whole number (0 or more).")
         return
 
@@ -153,30 +151,46 @@ def low_stock_alerts_menu(product_service):
         print("No low stock alerts. All products are above the threshold.")
     else:
         print("\n!! LOW STOCK ALERTS !!")
+        print(f"(Threshold: {low_stock_threshold})")
         for p in low_stock:
             print(p.sku + " - " + p.name + " (Qty: " + str(p.quantity) + ")")
 
+
+def set_low_stock_threshold(current_threshold):
+    print(f"Current low stock threshold is: {current_threshold}")
+    new_value = input("Enter new low stock threshold (whole number, e.g. 5): ").strip()
+
+    if new_value == "":
+        print("No change made.")
+        return current_threshold
+
+    try:
+        value = int(new_value)
+        if value < 0:
+            print("Threshold cannot be negative. Keeping current.")
+            return current_threshold
+        print(f"Threshold updated to: {value}")
+        return value
+    except ValueError:
+        print("Invalid number. Keeping current.")
+        return current_threshold
+
+
 def products_menu(menus, product_service,favourite_service, auth_service):
+    low_stock_threshold = 5  # default shared threshold for this session
+
     while True:
         choice = menus.view_products_menu()
 
         if choice == "1":
-            threshold_str = input("Enter a low stock threshold (default 5): ").strip()
-            if threshold_str == "":
-                threshold = 5
-            else:
-                try:
-                    threshold = int(threshold_str)
-                except ValueError:
-                    print("Invalid threshold. Using default of 5.")
-                    threshold = 5
 
-            items = product_service.view_all_products_with_status(low_stock=threshold)
+            items = product_service.view_all_products_with_status(low_stock=low_stock_threshold)
 
             if not items:
                 print("No products found.")
             else:
                 print("\n--- All Products (Inventory Status) ---")
+                print(f"(Threshold: {low_stock_threshold})")
                 for p, status in items:
                     label = status
                     if status == "LOW STOCK":
@@ -235,10 +249,9 @@ def products_menu(menus, product_service,favourite_service, auth_service):
         elif choice == "6":
             update_product_menu(product_service)
         elif choice == "7":
-            low_stock_alerts_menu(product_service)
+            low_stock_alerts_menu(product_service, low_stock_threshold)
         elif choice == "8":
             favourite_products, error_message = favourite_service.get_favourites()
-
             if error_message is not None:
                 print(error_message)
             elif not favourite_products:
@@ -257,7 +270,9 @@ def products_menu(menus, product_service,favourite_service, auth_service):
                     if sku == "":
                         break
                     print(favourite_service.unfavourite_product(sku))
-
+        elif choice == "9":
+            # The ONLY place user changes threshold
+            low_stock_threshold = set_low_stock_threshold(low_stock_threshold)
 
         elif choice == "0":
             break

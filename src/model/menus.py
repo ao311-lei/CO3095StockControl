@@ -20,6 +20,7 @@ class Menus:
         print("6) Update Product")
         print("7) Low Stock Alerts")
         print("8) View favourite products")
+        print("9) Set Low Stock Threshold")
         print("0) Back")
         return input("Choose an option: ").strip()
 

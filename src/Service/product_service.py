@@ -174,7 +174,7 @@ class ProductService:
         products = self.product_repo.get_all_products()
 
         for p in products:
-            if p.quantity < threshold:
+            if int(p.quantity) < threshold:
                 low_stock.append(p)
 
         return low_stock
