@@ -112,7 +112,7 @@ def purchase_orders_menu(menus, auth_service, purchase_order_service):
                     print("Quantity must be a number. Line skipped.")
                     continue
 
-                lines.append({"sku": sku, "qty": qty})
+                lines.append({"sku": sku, "quantity": qty})
 
 
             created_by = auth_service.current_user.username
