@@ -1,4 +1,4 @@
-from unicodedata import category
+from model.category import category
 
 
 class Product:
