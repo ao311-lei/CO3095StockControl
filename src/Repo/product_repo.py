@@ -105,6 +105,22 @@ class ProductRepo:
         return False
 
 
+    def product_active(self,sku):
+        try:
+            with open(self.filename, "r") as file:
+                for line in file:
+                    parts = line.strip().split("|")
+
+                    if len(parts) < 7:
+                        continue
+
+                    product_sku = parts[0]
+                    status = parts[6]
+                    if product_sku == sku:
+                        return status.upper() == "ACTIVE"
+        except FileNotFoundError:
+            return False
+        return False
     def get_product(self, sku):
         pass
 

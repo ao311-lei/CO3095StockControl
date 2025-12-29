@@ -47,8 +47,8 @@ class ProductService:
             return "SKU cannot be empty"
 
         existing = self.product_repo.find_by_sku(sku)
-        if existing.active is False:
-            return "Product is INACTIVE. Reactivate it before updating."
+        if existing == None:
+            return "Product not found"
 
         if name == "":
             return "Name cannot be empty"
