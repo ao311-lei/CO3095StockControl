@@ -112,6 +112,7 @@ class Menus:
         print("\n----------[ PURCHASE ORDERS ]----------")
         print("1) Create purchase order")
         print("2) View purchase orders")
+        print("3) Update purchase orders")
         print("0) Back")
         return input("Choose an option: ").strip()
 
