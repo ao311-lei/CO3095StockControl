@@ -214,4 +214,14 @@ class ProductService:
             if getattr(p, "active", True) is False:
                 continue
 
+                # convert quantity safely (txt files often load as strings)
+            try:
+                qty = int(p.quantity)
+            except:
+                continue  # skip broken data
+
+                # match the same rule as status labels (LOW STOCK when qty <= threshold)
+            if qty <= threshold:
+                low_stock.append(p)
+
         return low_stock

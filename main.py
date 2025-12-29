@@ -9,6 +9,8 @@ from Service.purchase_order_service import PurchaseOrderService
 from Repo.favourite_repo import FavouriteRepo
 from Service.favourite_service import FavouriteService
 
+def press_enter_to_go_back():
+    input("\nPress Enter to go back...")
 
 def show_products_and_favourite(products, favourite_service):
     if not products:
@@ -154,7 +156,7 @@ def low_stock_alerts_menu(product_service, low_stock_threshold):
         print(f"(Threshold: {low_stock_threshold})")
         for p in low_stock:
             print(p.sku + " - " + p.name + " (Qty: " + str(p.quantity) + ")")
-
+    press_enter_to_go_back()
 
 def set_low_stock_threshold(current_threshold):
     print(f"Current low stock threshold is: {current_threshold}")
