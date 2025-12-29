@@ -37,13 +37,46 @@ class ProductService:
         if existing != None:
             return "That SKU already exists"
 
-        new_product = Product(sku, name, description, quantity, price, category)
+        new_product = Product(sku, name, description, quantity, price, category, active=True)
         self.product_repo.add_product(new_product)
 
         return "Product added successfully"
 
-    def update_product(self, sku, **updates):
-        pass
+    def update_product(self, sku, name, description, quantity, price, category):
+        if sku == "":
+            return "SKU cannot be empty"
+
+        existing = self.product_repo.find_by_sku(sku)
+        if existing == None:
+            return "Product not found"
+
+        if name == "":
+            return "Name cannot be empty"
+
+        # quantity
+        try:
+            quantity = int(quantity)
+        except:
+            return "Quantity must be a whole number"
+        if quantity < 0:
+            return "Quantity cannot be negative"
+
+        # price
+        try:
+            price = float(price)
+        except:
+            return "Price must be a number"
+        if price < 0:
+            return "Price cannot be negative"
+
+        updated = self.product_repo.update_product(
+            sku, name, description, quantity, price, category
+        )
+
+        if updated:
+            return "Product updated successfully"
+        else:
+            return "Product not found"
 
     def remove_product(self, sku):
         if sku == "":
@@ -59,6 +92,38 @@ class ProductService:
         else:
             return "Product not found"
 
+    def deactivate_product(self, sku):
+        sku = (sku or "").strip()
+        if sku == "":
+            return "SKU cannot be empty"
+
+        p = self.product_repo.find_by_sku(sku)
+        if p is None:
+            return "Product not found"
+
+        if p.active is False:
+            return "Product is already INACTIVE"
+
+        p.active = False
+        self.product_repo.save_product(p)
+        return "Product deactivated successfully"
+
+    def reactivate_product(self, sku):
+        sku = (sku or "").strip()
+        if sku == "":
+            return "SKU cannot be empty"
+
+        p = self.product_repo.find_by_sku(sku)
+        if p is None:
+            return "Product not found"
+
+        if p.active is True:
+            return "Product is already ACTIVE"
+
+        p.active = True
+        self.product_repo.save_product(p)
+        return "Product reactivated successfully"
+
     def search_products(self, query):
 
         q = (query or "").strip().lower()
@@ -68,6 +133,7 @@ class ProductService:
             return results
 
         for p in self.product_repo.get_all_products():
+
             sku = str(p.sku).strip().lower()
             name = str(p.name).strip().lower()
             desc = str(p.description).strip().lower()
@@ -107,3 +173,55 @@ class ProductService:
             results.sort(key=lambda p: float(p.price))
 
         return results
+
+    def view_all_products_with_status(self, low_stock=5):
+        products = self.product_repo.get_all_products()
+        results = []
+
+        for p in products:
+            # HIGHEST PRIORITY: inactive
+            if p.active is False:
+                results.append((p, "INACTIVE"))
+                continue
+
+            qty = int(p.quantity)
+
+            if qty == 0:
+                status = "OUT OF STOCK"
+            elif qty <= low_stock:
+                status = "LOW STOCK"
+            else:
+                status = "IN STOCK"
+
+            results.append((p, status))
+
+        return results
+
+    def get_low_stock_products(self, threshold):
+        low_stock = []
+
+        # basic validation
+        try:
+            threshold = int(threshold)
+        except:
+            return None  # invalid threshold
+
+        if threshold < 0:
+            return None
+
+        for p in self.product_repo.get_all_products():
+            # NEW: ignore inactive for alerts
+            if getattr(p, "active", True) is False:
+                continue
+
+                # convert quantity safely (txt files often load as strings)
+            try:
+                qty = int(p.quantity)
+            except:
+                continue  # skip broken data
+
+                # match the same rule as status labels (LOW STOCK when qty <= threshold)
+            if qty <= threshold:
+                low_stock.append(p)
+
+        return low_stock

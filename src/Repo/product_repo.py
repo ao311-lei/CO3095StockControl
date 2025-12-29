@@ -32,7 +32,11 @@ class ProductRepo:
                     if len(parts) > 5 and parts[5] != "":
                         category = parts[5]
 
-                    product = Product(sku, name, description, quantity, price, category)
+                    active = True
+                    if len(parts) > 6 and parts[6].strip() != "":
+                        active = parts[6].strip().upper() == "ACTIVE"
+
+                    product = Product(sku, name, description, quantity, price, category, active)
                     self.products.append(product)
 
         except FileNotFoundError:
@@ -45,13 +49,16 @@ class ProductRepo:
             if product.category != None:
                 category = product.category
 
+            status = "ACTIVE" if getattr(product, "active", True) else "INACTIVE"
+
             line = (
                     product.sku + "," +
                     product.name + "," +
                     product.description + "," +
                     str(product.quantity) + "," +
                     str(product.price) + "," +
-                    category
+                    category + "," +
+                    status
             )
             file.write(line + "\n")
         file.close()
@@ -69,20 +76,57 @@ class ProductRepo:
                 return True
         return False
 
+    def update_product(self, sku, name, description, quantity, price, category):
+        p = self.find_by_sku(sku)
+        if p == None:
+            return False
+
+        p.name = name
+        p.description = description
+        p.quantity = quantity
+        p.price = price
+        p.category = category
+
+        self.save_products()
+        return True
+
     def find_by_sku(self, sku):
         for product in self.products:
             if product.sku == sku:
                 return product
         return None
 
+    def save_product(self, product: Product):
+        for i in range(len(self.products)):
+            if self.products[i].sku == product.sku:
+                self.products[i] = product
+                self.save_products()
+                return True
+        return False
+
+
+    def product_active(self,sku):
+        try:
+            with open(self.filename, "r") as file:
+                for line in file:
+                    parts = line.strip().split("|")
+
+                    if len(parts) < 7:
+                        continue
+
+                    product_sku = parts[0]
+                    status = parts[6]
+                    if product_sku == sku:
+                        return status.upper() == "ACTIVE"
+        except FileNotFoundError:
+            return False
+        return False
     def get_product(self, sku):
         pass
 
     def remove_product(self, sku):
         pass
 
-    def update_product(self, sku, **updates):
-        pass
 
     def get_all_products(self):
         return self.products
