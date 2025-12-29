@@ -134,11 +134,11 @@ def purchase_orders_menu(menus, auth_service, purchase_order_service):
         elif choice == "3":
             po_id = input("Purchase Order ID: ").strip()
             print("Choose new status: CREATED / APPROVED / PARTIALLY_RECEIVED / COMPLETED / CANCELLED")
-new_status = input("New status: ").strip()
+            new_status = input("New status: ").strip()
 
-user = auth_service.current_user.username
-result = purchase_order_service.update_po_status(po_id, new_status, user)
-print(result)")
+            user = auth_service.current_user.username
+            result = purchase_order_service.update_po_status(po_id, new_status, user)
+            print(result)
         elif choice == "0":
             break
         else:
