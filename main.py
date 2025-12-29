@@ -96,9 +96,13 @@ def add_product_menu(product_service):
 
 
 def remove_product_menu(product_service):
-    sku = input("Enter SKU to remove: ").strip()
-    result = product_service.remove_product(sku)
-    print(result)
+    while True:
+        sku = input("Enter SKU to remove a product (or press Enter to go back): ").strip()
+        # Press Enter = return to Products menu
+        if sku == "":
+            break
+        result = product_service.remove_product(sku)
+        print(result)
 
 def update_product_menu(product_service):
     sku = input("Enter SKU to update: ").strip()

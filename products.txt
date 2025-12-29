@@ -9,4 +9,3 @@ SKU008,Beef Mince,Lean beef mince 500g,9,4.75,Meat,ACTIVE
 SKU009,Orange Juice,Fresh orange juice 1L,18,2.3,Drinks,ACTIVE
 SKU0010,Apple Juice,fresh apple juice,50,1.5,Drinks,ACTIVE
 SKU0011,Orange,fresh orange,20,0.5,Fruit,ACTIVE
-SKU012,Pear,fresh pear,40,1.0,Fruit,ACTIVE
