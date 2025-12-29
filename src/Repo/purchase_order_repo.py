@@ -18,7 +18,27 @@ class PurchaseOrderRepo:
             parts = line.strip().split("|")
 
             if len(parts) == 5 and parts[0] == po_id:
-                parts[4]
+                parts[4] = new_status
+                new_lines.append("|".join(parts)+"\n")
+                updated = True
+            else:
+                new_lines.append(line)
+        if updated:
+            with open(PO_FILE,"w") as file:
+                file.writelines(new_lines)
+        return updated
+
+    def get_po_status(self,po_id):
+        try:
+            with open(PO_FILE,"r") as file:
+                for line in file:
+                    parts = line.strip().split("|")
+                    if len(parts) == 5 and parts[0] == po_id:
+                        return parts[4]
+        except FileNotFoundError:
+            pass
+        return None
+
     def save_purchase_order(self, purchase_order,lines):
         with open(PO_FILE,"a") as file:
             file.write(
