@@ -8,7 +8,7 @@ class ReservationRepo:
         with open(RESERVATION_FILE, 'a') as file:
             file.write(f"{reservation.reservation_id}|{reservation.order_id}|{reservation.sku}|"
                        f"{reservation.quantity}|{reservation.created_by}|{reservation.created_at}|"
-                       f"{reservation.status}|{reservation.expires_at}\n"
+                       f"{reservation.status}|{reservation.price}\n"
                        )
 
     def get_all_reservations(self):
