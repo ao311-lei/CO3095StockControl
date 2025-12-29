@@ -375,7 +375,14 @@ def purchase_orders_menu(menus, auth_service, purchase_order_service):
             print("Invalid choice. Try again.")
 
 def summary_dashboard_menu(product_service):
-    print("\n[DASHBOARD] Coming soon...\n")
+    summary = product_service.get_dashboard_summary()
+
+    print("\n==============================")
+    print("       [ DASHBOARD ]")
+    print("==============================")
+    print("Total products:", summary["total_products"])
+    print("Total units in stock:", summary["total_units"])
+    print("==============================\n")
     input("Press Enter to go back...")
 
 

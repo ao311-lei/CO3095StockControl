@@ -225,3 +225,18 @@ class ProductService:
                 low_stock.append(p)
 
         return low_stock
+
+    def get_dashboard_summary(self):
+        products = self.product_repo.get_all_products()
+
+        total_products = len(products)
+        total_units = 0
+
+        for p in products:
+            total_units += int(p.quantity)
+
+        return {
+            "total_products": total_products,
+            "total_units": total_units
+        }
+
