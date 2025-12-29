@@ -13,6 +13,9 @@ class StockService:
         if product is None:
             raise ValueError("Invalid SKU")
 
+        if getattr(product, "active", True) is False:
+            raise ValueError("This product is INACTIVE and cannot be used in stock operations.")
+
         product.quantity += amount
         self.product_repo.save_products()
         return product.quantity
@@ -24,6 +27,9 @@ class StockService:
         product = self.product_repo.find_by_sku(sku)
         if product is None:
             raise ValueError("Invalid SKU")
+
+        if getattr(product, "active", True) is False:
+            raise ValueError("This product is INACTIVE and cannot be used in stock operations.")
 
         if product.quantity < amount:
             raise ValueError("Insufficient stock")
