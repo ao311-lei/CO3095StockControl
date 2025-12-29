@@ -37,7 +37,7 @@ class ProductService:
         if existing != None:
             return "That SKU already exists"
 
-        new_product = Product(sku, name, description, quantity, price, category)
+        new_product = Product(sku, name, description, quantity, price, category, active=True)
         self.product_repo.add_product(new_product)
 
         return "Product added successfully"
@@ -92,6 +92,38 @@ class ProductService:
         else:
             return "Product not found"
 
+    def deactivate_product(self, sku):
+        sku = (sku or "").strip()
+        if sku == "":
+            return "SKU cannot be empty"
+
+        p = self.product_repo.find_by_sku(sku)
+        if p is None:
+            return "Product not found"
+
+        if p.active is False:
+            return "Product is already INACTIVE"
+
+        p.active = False
+        self.product_repo.save_product(p)
+        return "Product deactivated successfully"
+
+    def reactivate_product(self, sku):
+        sku = (sku or "").strip()
+        if sku == "":
+            return "SKU cannot be empty"
+
+        p = self.product_repo.find_by_sku(sku)
+        if p is None:
+            return "Product not found"
+
+        if p.active is True:
+            return "Product is already ACTIVE"
+
+        p.active = True
+        self.product_repo.save_product(p)
+        return "Product reactivated successfully"
+
     def search_products(self, query):
 
         q = (query or "").strip().lower()
@@ -101,6 +133,7 @@ class ProductService:
             return results
 
         for p in self.product_repo.get_all_products():
+
             sku = str(p.sku).strip().lower()
             name = str(p.name).strip().lower()
             desc = str(p.description).strip().lower()
@@ -146,6 +179,11 @@ class ProductService:
         results = []
 
         for p in products:
+            # HIGHEST PRIORITY: inactive
+            if p.active is False:
+                results.append((p, "INACTIVE"))
+                continue
+
             qty = int(p.quantity)
 
             if qty == 0:
@@ -171,10 +209,19 @@ class ProductService:
         if threshold < 0:
             return None
 
-        products = self.product_repo.get_all_products()
+        for p in self.product_repo.get_all_products():
+            # NEW: ignore inactive for alerts
+            if getattr(p, "active", True) is False:
+                continue
 
-        for p in products:
-            if p.quantity < threshold:
+                # convert quantity safely (txt files often load as strings)
+            try:
+                qty = int(p.quantity)
+            except:
+                continue  # skip broken data
+
+                # match the same rule as status labels (LOW STOCK when qty <= threshold)
+            if qty <= threshold:
                 low_stock.append(p)
 
         return low_stock

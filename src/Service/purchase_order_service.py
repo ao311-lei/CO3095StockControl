@@ -1,8 +1,10 @@
 import uuid
-from datetime import datetime
+from datetime import datetime,date
 from model.purchase_order import PurchaseOrder, PurchaseOrderLine
 from Repo.purchase_order_repo import PurchaseOrderRepo
 from Repo.product_repo import ProductRepo
+
+AUDIT_FILE = 'audit_log.txt'
 
 class PurchaseOrderService:
     def __init__(self):
@@ -38,7 +40,7 @@ class PurchaseOrderService:
             sku = line['sku']
             quantity = line['quantity']
 
-            if not self.product_repo.product_active('sku'):
+            if not self.product_repo.product_active(sku):
                 print(f"Product {sku} not active")
                 continue
 

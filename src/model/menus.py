@@ -20,6 +20,9 @@ class Menus:
         print("5) Remove Product")
         print("6) Update Product")
         print("7) Low Stock Alerts")
+        print("8) View favourite products")
+        print("9) Set Low Stock Threshold")
+        print("10) Deactivate and reactivate products")
         print("0) Back")
         return input("Choose an option: ").strip()
 
@@ -65,50 +68,6 @@ class Menus:
             else:
                 print("Invalid option")
 
-
-    def category_menu(category_service):
-        print("\n----------[ CATEGORIES ]----------")
-        print("1. Create category")
-        print("2. Rename category")
-        print("3. Deactivate category")
-        print("4. List categories")
-        print("5. Back")
-
-        choice = input("Choose option: ")
-
-        try:
-            if choice == "1":
-                cid = input("Category ID: ")
-                name = input("Category name: ")
-                category_service.create_category(cid, name)
-                print("Category created successfully")
-
-            elif choice == "2":
-                cid = input("Category ID: ")
-                new_name = input("New category name: ")
-                category_service.rename_category(cid, new_name)
-                print("Category renamed successfully")
-
-            elif choice == "3":
-                cid = input("Category ID: ")
-                category_service.deactivate_category(cid)
-                print("Category deactivated successfully")
-
-            elif choice == "4":
-                categories = category_service.list_categories()
-                for c in categories:
-                    status = "Active" if c.active else "Inactive"
-                    print(c.category_id, "-", c.name, "-", status)
-
-            elif choice == "5":
-                print("Back")
-
-            else:
-                print("Invalid option")
-
-        except ValueError as e:
-            print("Error:", e)
-
     def view_purchase_orders_menu(purchase_orders_service):
         print("\n----------[ PURCHASE ORDERS ]----------")
         print("1) Create purchase order")
@@ -116,6 +75,51 @@ class Menus:
         print("0) Back")
         return input("Choose an option: ").strip()
 
+
+def category_menu(category_service):
+    print("\n----------[ CATEGORIES ]----------")
+    print("1. Create category")
+    print("2. Rename category")
+    print("3. Deactivate category")
+    print("4. List categories")
+    print("5. Back")
+
+    choice = input("Choose option: ")
+
+    try:
+        if choice == "1":
+            cid = input("Category ID: ")
+            name = input("Category name: ")
+            category_service.create_category(cid, name)
+            print("Category created successfully")
+
+        elif choice == "2":
+            cid = input("Category ID: ")
+            new_name = input("New category name: ")
+            category_service.rename_category(cid, new_name)
+            print("Category renamed successfully")
+
+        elif choice == "3":
+            cid = input("Category ID: ")
+            category_service.deactivate_category(cid)
+            print("Category deactivated successfully")
+
+        elif choice == "4":
+            categories = category_service.list_categories()
+            for c in categories:
+                status = "Active" if c.active else "Inactive"
+                print(c.category_id, "-", c.name, "-", status)
+
+        elif choice == "5":
+            # Exit the category menu
+            print("Back")
+
+        else:
+            print("Invalid option")
+
+    except ValueError as e:
+        # Catch and display validation errors
+        print("Error:", e)
 
 
 def auth_menu(auth_service):

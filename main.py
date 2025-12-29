@@ -6,6 +6,26 @@ from Repo.stock_repo import StockRepo
 from Service.auth_service import AuthService
 from Service.stock_service import StockService
 from Service.purchase_order_service import PurchaseOrderService
+from Repo.favourite_repo import FavouriteRepo
+from Service.favourite_service import FavouriteService
+
+def press_enter_to_go_back():
+    input("\nPress Enter to go back...")
+
+def show_products_and_favourite(products, favourite_service):
+    if not products:
+        print("No products found.")
+        return
+
+    print("\n--- Products ---")
+    for p in products:
+        print(f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
+
+    while True:
+        sku = input("Enter SKU to favourite (or press Enter to go back): ").strip()
+        if sku == "":
+            break
+        print(favourite_service.favourite_product(sku))
 
 
 def stock_menu(menus, auth_service, stock_service):
@@ -13,44 +33,203 @@ def stock_menu(menus, auth_service, stock_service):
         choice = menus.view_stock_menu()
 
         if choice == "1":
-            print("TODO later: Record stock increase")
+            sku = input("Enter SKU to increase stock: ").strip()
+
+            product = stock_service.product_repo.find_by_sku(sku)
+            if product is None:
+                print("Invalid SKU")
+                continue
+
+            print(f"Current quantity for {sku}: {product.quantity}")
+
+            amount_str = input("Enter amount to increase by: ").strip()
+
+            try:
+                amount = int(amount_str)
+                new_qty = stock_service.record_stock_increase(sku, amount)
+                print(f"Stock updated. New quantity for {sku}: {new_qty}")
+            except ValueError as e:
+                print(f"Error: {e}")
+
         elif choice == "2":
-            print("TODO later: Record stock decrease")
+            sku = input("Enter SKU to decrease stock: ").strip()
+
+            product = stock_service.product_repo.find_by_sku(sku)
+            if product is None:
+                print("Invalid SKU")
+                continue
+
+            print(f"Current quantity for {sku}: {product.quantity}")
+
+            amount_str = input("Enter amount to decrease by: ").strip()
+
+            try:
+                amount = int(amount_str)
+                new_qty = stock_service.record_stock_decrease(sku, amount)
+                print(f"Stock updated. New quantity for {sku}: {new_qty}")
+            except ValueError as e:
+                print(f"Error: {e}")
+
+
         elif choice == "0":
             break
         else:
             print("Invalid choice. Try again.")
 
-
 def add_product_menu(product_service):
-    sku = input("Enter SKU: ")
-    name = input("Enter name: ")
-    description = input("Enter description: ")
-    quantity = input("Enter quantity: ")
-    price = input("Enter price: ")
-    category = input("Enter category (optional): ")
+    while True:
+        sku = input("Enter SKU (or press Enter to go back): ").strip()
+        if sku == "":
+            break
 
-    if category == "":
-        category = None
+        name = input("Enter name: ").strip()
+        description = input("Enter description: ").strip()
+        quantity = input("Enter quantity: ").strip()
+        price = input("Enter price: ").strip()
+        category = input("Enter category (optional): ").strip()
 
-    result = product_service.add_new_product(sku, name, description, quantity, price, category)
-    print(result)
+        if category == "":
+            category = None
+
+        result = product_service.add_new_product(sku, name, description, quantity, price, category)
+        print(result)
 
 
 def remove_product_menu(product_service):
-    sku = input("Enter SKU to remove: ").strip()
-    result = product_service.remove_product(sku)
-    print(result)
+    while True:
+        sku = input("Enter SKU to remove a product (or press Enter to go back): ").strip()
+        # Press Enter = return to Products menu
+        if sku == "":
+            break
+        result = product_service.remove_product(sku)
+        print(result)
+
+def update_product_menu(product_service):
+    while True:
+        sku = input("Enter SKU to update (or press Enter to go back): ").strip()
+        if sku == "":
+            break
+        # Find existing product so we can show current values
+        product = product_service.product_repo.find_by_sku(sku)
+        if product == None:
+            print("Product not found")
+            return
+
+        print("Press Enter to keep the current value.")
+
+        name = input("Name (" + product.name + "): ").strip()
+        if name == "":
+            name = product.name
+
+        description = input("Description (" + product.description + "): ").strip()
+        if description == "":
+            description = product.description
+
+        quantity = input("Quantity (" + str(product.quantity) + "): ").strip()
+        if quantity == "":
+            quantity = str(product.quantity)
+
+        price = input("Price (" + str(product.price) + "): ").strip()
+        if price == "":
+            price = str(product.price)
+
+        current_category = ""
+        if product.category != None:
+            current_category = product.category
+
+        category = input("Category (" + current_category + "): ").strip()
+        if category == "":
+            category = product.category  # keep as is (could be None)
+
+        result = product_service.update_product(sku, name, description, quantity, price, category)
+        print(result)
+
+def favourite_prompt(favourite_service):
+
+    while True:
+        sku = input("Enter SKU to favourite (or press Enter to go back): ").strip()
+        if sku == "":
+            break
+        print(favourite_service.favourite_product(sku))
 
 
-def products_menu(menus, product_service):
+def low_stock_alerts_menu(product_service, low_stock_threshold):
+    low_stock = product_service.get_low_stock_products(low_stock_threshold)
+
+    if low_stock is None:
+        print("Threshold must be a whole number (0 or more).")
+        return
+
+    if len(low_stock) == 0:
+        print("No low stock alerts. All products are above the threshold.")
+    else:
+        print("\n!! LOW STOCK ALERTS !!")
+        print(f"(Threshold: {low_stock_threshold})")
+        for p in low_stock:
+            print(p.sku + " - " + p.name + " (Qty: " + str(p.quantity) + ")")
+    press_enter_to_go_back()
+
+def set_low_stock_threshold(current_threshold):
+    print(f"Current low stock threshold is: {current_threshold}")
+    new_value = input("Enter new low stock threshold (whole number, e.g. 5): ").strip()
+
+    if new_value == "":
+        print("No change made.")
+        return current_threshold
+
+    try:
+        value = int(new_value)
+        if value < 0:
+            print("Threshold cannot be negative. Keeping current.")
+            return current_threshold
+        print(f"Threshold updated to: {value}")
+        return value
+    except ValueError:
+        print("Invalid number. Keeping current.")
+        return current_threshold
+
+
+def products_menu(menus, product_service,favourite_service, auth_service):
+    low_stock_threshold = 5  # default shared threshold for this session
+
     while True:
         choice = menus.view_products_menu()
 
         if choice == "1":
-            print("TODO later: view products")
+
+            items = product_service.view_all_products_with_status(low_stock=low_stock_threshold)
+
+            if not items:
+                print("No products found.")
+            else:
+                print("\n--- All Products (Inventory Status) ---")
+                print(f"(Threshold: {low_stock_threshold})")
+                for p, status in items:
+                    label = status
+                    if status == "LOW STOCK":
+                        label = "LOW STOCK !"
+                    elif status == "OUT OF STOCK":
+                        label = "OUT OF STOCK !!"
+
+                    print(f"{p.sku} | {p.name} | Qty: {p.quantity} | £{p.price} | {p.category} | {label}")
+
+                print("\n--- Add Favourite Products ---")
+                favourite_prompt(favourite_service)
+
         elif choice == "2":
-            print("TODO later: Search products")
+            query = input("Please search up desired product by SKU / Name / Description : ")
+            results = product_service.search_products(query)
+
+            if not results:
+                print("No matching products found.")
+            else:
+                print("\n--- Search Results ---")
+                for p in results:
+                    print(f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
+
+                print("\n--- Add Favourite Products ---")
+                favourite_prompt(favourite_service)
+
         elif choice == "3":
             category = input("Category (leave blank for all categories): ").strip()
             max_qty = input("Max quantity (leave blank for no limit): ").strip()
@@ -72,11 +251,69 @@ def products_menu(menus, product_service):
                 for p in results:
                     print(f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
 
+                print("\n--- Add Favourite Products ---")
+                favourite_prompt(favourite_service)
+
 
         elif choice == "4":
             add_product_menu(product_service)
         elif choice == "5":
             remove_product_menu(product_service)
+        elif choice == "6":
+            update_product_menu(product_service)
+        elif choice == "7":
+            low_stock_alerts_menu(product_service, low_stock_threshold)
+        elif choice == "8":
+            favourite_products, error_message = favourite_service.get_favourites()
+            if error_message is not None:
+                print(error_message)
+            elif not favourite_products:
+                print("No favourites yet.")
+            else:
+                print("\n--- Favourite Products ---")
+                for p in favourite_products:
+                    print(
+                        f"{p.sku} | {p.name} | {p.description} | Qty: {p.quantity} | £{p.price} | {p.category}")
+
+                print("\n--- Add and Remove Favourite Products ---")
+                favourite_prompt(favourite_service)
+
+                while True:
+                    sku = input("\nEnter SKU to unfavourite (or press Enter to go back): ").strip()
+                    if sku == "":
+                        break
+                    print(favourite_service.unfavourite_product(sku))
+        elif choice == "9":
+            # The ONLY place user changes threshold
+            low_stock_threshold = set_low_stock_threshold(low_stock_threshold)
+
+        elif choice == "10":
+            print("\n----------[ DEACTIVATE AND REACTIVATE PRODUCTS1 ]----------")
+            print("\n1) Deactivate product")
+            print("2) Reactivate product")
+            print("0) Cancel")
+
+            action = input("Choose an option: ").strip()
+
+            if action == "1":
+                sku = input("Enter SKU to deactivate: ").strip()
+                result = product_service.deactivate_product(sku)
+                print(result)
+
+            elif action == "2":
+                sku = input("Enter SKU to reactivate: ").strip()
+                result = product_service.reactivate_product(sku)
+                print(result)
+
+            elif action == "0":
+                print("Action cancelled.")
+
+            else:
+                print("Invalid option.")
+
+
+
+
         elif choice == "0":
             break
         else:
@@ -112,7 +349,7 @@ def purchase_orders_menu(menus, auth_service, purchase_order_service):
                     print("Quantity must be a number. Line skipped.")
                     continue
 
-                lines.append({"sku": sku, "qty": qty})
+                lines.append({"sku": sku, "quantity": qty})
 
 
             created_by = auth_service.current_user.username
@@ -146,10 +383,12 @@ def main():
     user_repo = UserRepo("users.txt")
     stock_repo = StockRepo("stocks.txt")
     product_repo = ProductRepo("products.txt")
-    product_service = ProductService(product_repo, None)
-
+    favourite_repo = FavouriteRepo("favourites.txt")
 
     auth_service = AuthService(user_repo)
+    product_service = ProductService(product_repo, None)
+    stock_service = StockService(product_repo)
+    favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
     stock_service = StockService(stock_repo)
 
     purchase_order_service = PurchaseOrderService()
@@ -160,7 +399,7 @@ def main():
         choice = menus.view_main_menu()
 
         if choice == "1":
-            products_menu(menus, product_service)
+            products_menu(menus, product_service, favourite_service, auth_service)
         elif choice == "2":
             if auth_service.current_user is None:
                 print("Authorization failed. Please login first.")
@@ -181,5 +420,15 @@ def main():
         else:
             print("Invalid choice. Try again.")
 
+
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
