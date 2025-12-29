@@ -258,6 +258,32 @@ def products_menu(menus, product_service,favourite_service, auth_service):
                         break
                     print(favourite_service.unfavourite_product(sku))
 
+        elif choice == "9":
+            print("\n----------[ DEACTIVATE AND REACTIVATE PRODUCTS1 ]----------")
+            print("\n1) Deactivate product")
+            print("2) Reactivate product")
+            print("0) Cancel")
+
+            action = input("Choose an option: ").strip()
+
+            if action == "1":
+                sku = input("Enter SKU to deactivate: ").strip()
+                result = product_service.deactivate_product(sku)
+                print(result)
+
+            elif action == "2":
+                sku = input("Enter SKU to reactivate: ").strip()
+                result = product_service.reactivate_product(sku)
+                print(result)
+
+            elif action == "0":
+                print("Action cancelled.")
+
+            else:
+                print("Invalid option.")
+
+
+
 
         elif choice == "0":
             break
@@ -331,7 +357,6 @@ def main():
     product_service = ProductService(product_repo, None)
     stock_service = StockService(product_repo)
     favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
-    stock_service = StockService(stock_repo)
 
     purchase_order_service = PurchaseOrderService()
 
