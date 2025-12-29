@@ -234,13 +234,6 @@ class ProductService:
         low_stock_count = 0
         out_of_stock_count = 0
 
-        if out_of_stock_count > 0:
-            system_status = "CRITICAL"
-        elif low_stock_count >= 3:
-            system_status = "WARNING"
-        else:
-            system_status = "HEALTHY"
-
         for p in products:
             qty = int(p.quantity)
             total_units += qty
@@ -250,13 +243,30 @@ class ProductService:
             elif qty < threshold:
                 low_stock_count += 1
 
+        if out_of_stock_count > 0:
+            system_status = "CRITICAL"
+        elif low_stock_count >= 3:
+            system_status = "WARNING"
+        else:
+            system_status = "HEALTHY"
+
+        if total_products > 0:
+            low_stock_percent = round((low_stock_count / total_products) * 100, 1)
+            out_of_stock_percent = round((out_of_stock_count / total_products) * 100, 1)
+        else:
+            low_stock_percent = 0
+            out_of_stock_percent = 0
+
         return {
             "total_products": total_products,
             "total_units": total_units,
             "low_stock_count": low_stock_count,
             "out_of_stock_count": out_of_stock_count,
             "threshold": threshold,
-            "system_status": system_status
+            "system_status": system_status,
+            "low_stock_percent": low_stock_percent,
+            "out_of_stock_percent": out_of_stock_percent,
+
 
         }
 
