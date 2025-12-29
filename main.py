@@ -105,42 +105,44 @@ def remove_product_menu(product_service):
         print(result)
 
 def update_product_menu(product_service):
-    sku = input("Enter SKU to update: ").strip()
+    while True:
+        sku = input("Enter SKU to update (or press Enter to go back): ").strip()
+        if sku == "":
+            break
+        # Find existing product so we can show current values
+        product = product_service.product_repo.find_by_sku(sku)
+        if product == None:
+            print("Product not found")
+            return
 
-    # Find existing product so we can show current values
-    product = product_service.product_repo.find_by_sku(sku)
-    if product == None:
-        print("Product not found")
-        return
+        print("Press Enter to keep the current value.")
 
-    print("Press Enter to keep the current value.")
+        name = input("Name (" + product.name + "): ").strip()
+        if name == "":
+            name = product.name
 
-    name = input("Name (" + product.name + "): ").strip()
-    if name == "":
-        name = product.name
+        description = input("Description (" + product.description + "): ").strip()
+        if description == "":
+            description = product.description
 
-    description = input("Description (" + product.description + "): ").strip()
-    if description == "":
-        description = product.description
+        quantity = input("Quantity (" + str(product.quantity) + "): ").strip()
+        if quantity == "":
+            quantity = str(product.quantity)
 
-    quantity = input("Quantity (" + str(product.quantity) + "): ").strip()
-    if quantity == "":
-        quantity = str(product.quantity)
+        price = input("Price (" + str(product.price) + "): ").strip()
+        if price == "":
+            price = str(product.price)
 
-    price = input("Price (" + str(product.price) + "): ").strip()
-    if price == "":
-        price = str(product.price)
+        current_category = ""
+        if product.category != None:
+            current_category = product.category
 
-    current_category = ""
-    if product.category != None:
-        current_category = product.category
+        category = input("Category (" + current_category + "): ").strip()
+        if category == "":
+            category = product.category  # keep as is (could be None)
 
-    category = input("Category (" + current_category + "): ").strip()
-    if category == "":
-        category = product.category  # keep as is (could be None)
-
-    result = product_service.update_product(sku, name, description, quantity, price, category)
-    print(result)
+        result = product_service.update_product(sku, name, description, quantity, price, category)
+        print(result)
 
 def favourite_prompt(favourite_service):
 
