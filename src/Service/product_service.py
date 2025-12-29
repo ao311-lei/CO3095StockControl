@@ -234,6 +234,13 @@ class ProductService:
         low_stock_count = 0
         out_of_stock_count = 0
 
+        if out_of_stock_count > 0:
+            system_status = "CRITICAL"
+        elif low_stock_count >= 3:
+            system_status = "WARNING"
+        else:
+            system_status = "HEALTHY"
+
         for p in products:
             qty = int(p.quantity)
             total_units += qty
@@ -248,6 +255,8 @@ class ProductService:
             "total_units": total_units,
             "low_stock_count": low_stock_count,
             "out_of_stock_count": out_of_stock_count,
-            "threshold": threshold
+            "threshold": threshold,
+            "system_status": system_status
+
         }
 

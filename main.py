@@ -383,7 +383,9 @@ def summary_dashboard_menu(product_service, low_stock_threshold):
     print("Total products:", summary["total_products"])
     print("Total units in stock:", summary["total_units"])
     print("Low stock items (< " + str(summary["threshold"]) + "):", summary["low_stock_count"])
+    print("System status:", summary["system_status"])
     print("==============================\n")
+    print("System status:", summary["system_status"])
     input("Press Enter to go back...")
 
 
