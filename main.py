@@ -376,6 +376,7 @@ def purchase_orders_menu(menus, auth_service, purchase_order_service):
 
 def summary_dashboard_menu(product_service):
     print("\n[DASHBOARD] Coming soon...\n")
+    input("Press Enter to go back...")
 
 
 def main():
