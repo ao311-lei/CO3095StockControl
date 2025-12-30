@@ -50,7 +50,7 @@ class ReservationService:
             return
 
 
-        if quantity > available and not can_override:
+        if quantity > available:
             print(f"Not enough available stock. Available: {available}")
             return
 

@@ -124,6 +124,8 @@ def category_menu(category_service):
         print("Error:", e)
 
 
+    def view_reservation_menu(reservation_service):
+        print("\n----------[ RESERVATIONS ]----------")
 def auth_menu(auth_service):
     pass
 
