@@ -27,8 +27,7 @@ class ReservationService:
         reserved = self.reservation_repo.get_active_reserved_quantity(sku)
         return on_hand - reserved
 
-    def reserve_stock(self, order_id, sku, quantity, user, expiry_minutes=None):
-        # Validation
+    def reserve_stock(self, order_id, sku, quantity, user, price):
         if order_id.strip() == "":
             print("Order ID cannot be empty")
             return
@@ -41,7 +40,7 @@ class ReservationService:
             print("Quantity must be a positive integer")
             return
 
-        if not self.product_repo.is_product_active(sku):
+        if not self.product_repo.product_active(sku):
             print("Product is inactive or does not exist")
             return
 
@@ -50,9 +49,6 @@ class ReservationService:
             print("Product not found")
             return
 
-        # Role override
-        role = getattr(user, "role", "staff").lower()
-        can_override = (role == "admin")
 
         if quantity > available and not can_override:
             print(f"Not enough available stock. Available: {available}")
@@ -61,20 +57,15 @@ class ReservationService:
         reservation_id = "RSV-" + uuid.uuid4().hex[:6].upper()
         created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        expires_at = ""
-        if expiry_minutes is not None:
-            exp = datetime.now() + timedelta(minutes=int(expiry_minutes))
-            expires_at = exp.strftime("%Y-%m-%d %H:%M:%S")
-
         reservation = Reservation(
             reservation_id,
             order_id,
             sku,
             quantity,
+            price
             user.username,
             created_at,
             "ACTIVE",
-            expires_at
         )
 
         self.reservation_repo.save_reservation(reservation)
