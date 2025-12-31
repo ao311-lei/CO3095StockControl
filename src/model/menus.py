@@ -9,6 +9,7 @@ class Menus:
         print("4) Account")
         print("5) Dashboard")
         print("6) Returns")
+        print("7) Budget")
         print("0) Exit")
         return input("Choose an option: ").strip()
 
@@ -31,6 +32,13 @@ class Menus:
         print("\n------------[ STOCK ]-----------")
         print("1) Record stock increase")
         print("2) Record stock decrease")
+        print("0) Back")
+        return input("Choose an option: ").strip()
+
+    def view_budget_menu(self):
+        print("\n-----------[ BUDGET ]----------")
+        print("1) View current budget")
+        print("2) Set / update budget")
         print("0) Back")
         return input("Choose an option: ").strip()
 
