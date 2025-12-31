@@ -1,43 +1,43 @@
 from Repo.budget_repo import BudgetRepo
 
 class BudgetService:
-    def __init__(self, budget_repo: BudgetRepo, auth_service):
+    def __init__(self, budget_repo: BudgetRepo):
         self.budget_repo = budget_repo
-        self.auth_service = auth_service
 
-    def _get_username(self):
-        if self.auth_service is None:
-            return None
-        if self.auth_service.current_user is None:
-            return None
-        return self.auth_service.current_user.username
+    def _check_current_month(self):
 
-    def view_budget(self):
-        username = self._get_username()
-        if username is None:
-            return "You must be logged in to view your budget."
+        current_month = self.budget_repo.current_month_key()
+        saved_month, saved_amount = self.budget_repo.load_budget_record()
 
-        budget = self.budget_repo.get_budget_for_user(username)
-        if budget is None:
-            return "No budget set yet for your account."
-        return f"Your inventory budget: £{budget:.2f}"
+        if saved_month is None or saved_amount is None:
+            return current_month, None
 
-    def set_budget(self, amount_str):
-        username = self._get_username()
-        if username is None:
-            return "You must be logged in to set your budget."
+        if saved_month != current_month:
+            self.budget_repo.save_budget_record(current_month, "")
+            return current_month, None
 
-        amount_str = (amount_str or "").strip()
-        if amount_str == "":
+        return saved_month, saved_amount
+
+    def view_monthly_budget(self):
+        month_key, amount = self._check_current_month()
+
+        if amount is None:
+            return f"No budget set for {month_key} yet."
+        return f"Monthly budget for {month_key}: £{amount:.2f}"
+
+    def set_monthly_budget(self, amount):
+        amount = (amount or "").strip()
+        if amount == "":
             return "Budget cannot be empty."
 
         try:
-            amount = float(amount_str)
+            amount = float(amount)
         except:
             return "Budget must be a number."
 
         if amount < 0:
             return "Budget cannot be negative."
 
-        self.budget_repo.set_budget_for_user(username, amount)
-        return f"Budget saved for {username}: £{amount:.2f}"
+        month_key = self.budget_repo.current_month_key()
+        self.budget_repo.save_budget_record(month_key, amount)
+        return f"Monthly budget saved for {month_key}: £{amount:.2f}"
