@@ -42,4 +42,5 @@ class AuthService:
         return True
 
     def logout(self):
-        pass
+        self.current_user = None
+        return True

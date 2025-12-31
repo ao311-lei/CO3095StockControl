@@ -53,6 +53,6 @@ class UserRepo:
         for user in users:
             if user.username == username:
                 user.role = new_role
-                self.save_all_users()user
+                self.save_all_users()
                 return True
         return False
