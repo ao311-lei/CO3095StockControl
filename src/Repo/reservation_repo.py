@@ -17,20 +17,20 @@ class ReservationRepo:
         try:
             with open(RESERVATION_FILE, 'r') as file:
                 for line in file:
-        parts = line.strip().split("|")
-        if len(parts) != 8:
-            continue
+                    parts = line.strip().split("|")
+                    if len(parts) != 8:
+                        continue
 
-        reservations.append(Reservation(
-            parts[0], parts[1], parts[2], parts[3],
-            parts[4], parts[5], parts[6], parts[7]
-        ))
+                    reservations.append(Reservation(
+                        parts[0], parts[1], parts[2], parts[3],
+                        parts[4], parts[5], parts[6], parts[7]
+                     ))
 
-    except FileNotFoundError:
-    pass
+        except FileNotFoundError:
+            pass
 
 
-    return reservations
+        return reservations
 
 
     def get_active_reserved_quantity(self, sku):

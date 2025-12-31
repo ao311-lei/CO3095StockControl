@@ -1,3 +1,5 @@
+from Repo.purchase_order_repo import PurchaseOrderRepo
+from Repo.reservation_repo import ReservationRepo
 from model.menus import Menus
 from Repo.product_repo import ProductRepo
 from Service.product_service import ProductService
@@ -10,6 +12,8 @@ from Repo.favourite_repo import FavouriteRepo
 from Service.favourite_service import FavouriteService
 from Repo.return_repo import ReturnRepo
 from Service.return_service import ReturnService
+from Repo.reservation_repo import ReservationRepo
+from Service.reservation_service import ReservationService
 
 
 def press_enter_to_go_back():
@@ -321,6 +325,19 @@ def products_menu(menus, product_service,favourite_service, auth_service, low_st
         else:
             print("Invalid choice. Try again.")
 
+def reserve_stock_menu(auth_service, reservation_service, price=None):
+    order_id = input("Order ID: ").strip()
+    sku = input("SKU: ").strip()
+    try:
+        qty = int(input("Quantity to reserve: ").strip())
+    except ValueError:
+        print("Quantity must be a number")
+        return
+
+
+
+    reservation_service.reserve_stock(order_id, sku, qty, auth_service.current_user,price)
+
 
 def purchase_orders_menu(menus, auth_service, purchase_order_service):
     while True:
@@ -431,6 +448,7 @@ def main():
     favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
     #stock_service = StockService(stock_repo)
     return_service = ReturnService(product_repo, stock_service, return_repo)
+    reservation_service =ReservationService(product_repo)
 
     purchase_order_service = PurchaseOrderService()
 
@@ -460,6 +478,8 @@ def main():
             summary_dashboard_menu(product_service, low_stock_threshold)
         elif choice == "6":
             returns_menu(return_service)
+        elif choice == "7":
+            reserve_stock_menu(auth_service, reservation_service)
         elif choice == "0":
             print("Goodbye!")
             break

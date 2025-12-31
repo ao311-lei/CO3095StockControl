@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from model.reservation import Reservation
 from Repo.reservation_repo import ReservationRepo
@@ -40,10 +40,6 @@ class ReservationService:
             print("Quantity must be a positive integer")
             return
 
-        if not self.product_repo.product_active(sku):
-            print("Product is inactive or does not exist")
-            return
-
         available = self.get_available_quantity(sku)
         if available is None:
             print("Product not found")
@@ -62,7 +58,7 @@ class ReservationService:
             order_id,
             sku,
             quantity,
-            price
+            price,
             user.username,
             created_at,
             "ACTIVE",
