@@ -150,6 +150,15 @@ def category_menu(category_service):
         # Catch and display validation errors
         print("Error:", e)
 
+def view_supplier_catalog_menu(self):
+    print("\n----[ SUPPLIER PRODUCT CATALOG ]----")
+    print("1) Link product to supplier")
+    print("2) Unlink product from supplier")
+    print("3) View supplier catalog")
+    print("0) Back")
+    return input("Choose an option: ").strip()
+
+
 
 def auth_menu(auth_service):
     pass
