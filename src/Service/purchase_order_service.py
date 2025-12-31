@@ -40,6 +40,7 @@ class PurchaseOrderService:
             sku = line['sku']
             quantity = line['quantity']
 
+        valid_lines.append((sku, quantity))
 
         if len(valid_lines) == 0:
             print("Purchase order must have at least one product")
