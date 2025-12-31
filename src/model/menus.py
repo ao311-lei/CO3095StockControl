@@ -39,6 +39,7 @@ class Menus:
         print("\n-----------[ BUDGET ]----------")
         print("1) View current budget")
         print("2) Set / update budget")
+        print("3) Estimate product restock cost ")
         print("0) Back")
         return input("Choose an option: ").strip()
 

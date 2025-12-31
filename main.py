@@ -418,7 +418,7 @@ def returns_menu(return_service):
         result = return_service.process_return(sku, qty, condition)
         print(result)
 
-def budget_menu(menus, budget_service):
+def budget_menu(menus, budget_service, product_service):
     while True:
         choice = menus.view_budget_menu()
 
@@ -427,6 +427,51 @@ def budget_menu(menus, budget_service):
         elif choice == "2":
             amount = input(" Enter monthly budget amount for restocking : ").strip()
             print(budget_service.set_monthly_budget(amount))
+        elif choice == "3":
+            print("\nEnter SKUs to estimate restock for (press Enter on SKU to finish).")
+
+            sku_targets = []
+
+            while True:
+                sku = input("SKU: ").strip()
+                if sku == "":
+                    break
+
+                target = input(f"Target stock level for {sku} (e.g. 30): ").strip()
+                if target == "":
+                    print("Target stock level is required. SKU skipped.")
+                    continue
+
+                sku_targets.append((sku, target))
+
+            if len(sku_targets) == 0:
+                print("No SKUs entered.")
+                continue
+
+            breakdown, total_cost, errors = product_service.estimate_restock_cost_for_multiple_skus(sku_targets)
+
+            if errors:
+                print("\n--- Skipped / Errors ---")
+                for e in errors:
+                    print(e)
+
+            if not breakdown:
+                print("\nNo valid products to estimate.")
+                continue
+
+            print("\n--- Restock Cost Estimate (Selected SKUs) ---")
+            for item in breakdown:
+                print(
+                    f"{item['sku']} | {item['name']} | "
+                    f"{item['current_qty']} → {item['target_qty']} | "
+                    f"Buy: {item['units_to_buy']} | "
+                    f"£{item['unit_price']:.2f} | "
+                    f"Cost: £{item['estimated_cost']:.2f}"
+                )
+
+            # This keeps your TOTAL line exactly how you wanted
+            print(f"\nTOTAL estimated restock cost: £{total_cost:.2f}")
+
         elif choice == "0":
             break
         else:
@@ -480,7 +525,7 @@ def main():
         elif choice == "6":
             returns_menu(return_service)
         elif choice== "7":
-            budget_menu(menus,budget_service)
+            budget_menu(menus,budget_service,product_service)
         elif choice == "0":
             print("Goodbye!")
             break
