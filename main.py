@@ -423,10 +423,10 @@ def budget_menu(menus, budget_service):
         choice = menus.view_budget_menu()
 
         if choice == "1":
-            print(budget_service.view_budget())
+            print(budget_service.view_monthly_budget())
         elif choice == "2":
-            amount = input("Enter new budget amount for this month (e.g. 5000): ").strip()
-            print(budget_service.set_budget(amount))
+            amount = input(" Enter monthly budget amount for restocking : ").strip()
+            print(budget_service.set_monthly_budget(amount))
         elif choice == "0":
             break
         else:
@@ -449,7 +449,7 @@ def main():
     favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
     return_service = ReturnService(product_repo, stock_service, return_repo)
     budget_repo = BudgetRepo("budgets.txt")
-    budget_service = BudgetService(budget_repo, auth_service)
+    budget_service = BudgetService(budget_repo)
 
     purchase_order_service = PurchaseOrderService()
 
