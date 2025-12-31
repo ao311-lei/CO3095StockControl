@@ -325,19 +325,56 @@ def products_menu(menus, product_service,favourite_service, auth_service, low_st
         else:
             print("Invalid choice. Try again.")
 
-def reserve_stock_menu(auth_service, reservation_service, price=None):
-    order_id = input("Order ID: ").strip()
-    sku = input("SKU: ").strip()
-    try:
-        qty = int(input("Quantity to reserve: ").strip())
-    except ValueError:
-        print("Quantity must be a number")
-        return
+def reserve_stock_menu(menus, auth_service, reservation_service):
+    while True:
+        choice = menus.view_reservations_menu()
 
+        if choice == "1":
+            if auth_service.current_user is None:
+                print("You are not logged in.")
+                menus.auth_menu(auth_service)
+                continue
 
+            order_id = input("Order ID: ").strip()
+            sku = input("SKU: ").strip()
 
-    reservation_service.reserve_stock(order_id, sku, qty, auth_service.current_user,price)
+            try:
+                qty = int(input("Quantity to reserve: ").strip())
+            except ValueError:
+                print("Quantity must be a number")
+                continue
 
+            try:
+                price = float(input("Price: ").strip())
+            except ValueError:
+                print("Price must be a number.")
+                continue
+
+            reservation_service.reserve_stock(order_id, sku, qty, auth_service.current_user, price)
+
+        elif choice == "2":
+            reservations = reservation_service.get_reservation()
+            if not reservations:
+                print("No reservations found.")
+            else:
+                print("\n=== Reservations ===")
+                for r in reservations:
+                    print(f"{r.reservation_id}|{r.order_id}|{r.sku}|{r.quantity}|{r.created_by}|{r.status}|{r.price}\n")
+
+        elif choice == "3":
+            if auth_service.current_user is None:
+                print("You must be logged in.")
+                menus.auth_menu(auth_service)
+                continue
+
+            reservation_id = input("Reservation ID to cancel: ").strip()
+            reservation_service.cancel_reservation(reservation_id, auth_service.current_user)
+
+        elif choice == "0":
+            break
+
+        else:
+            print("Invalid option. Try again.")
 
 def purchase_orders_menu(menus, auth_service, purchase_order_service):
     while True:
@@ -479,7 +516,7 @@ def main():
         elif choice == "6":
             returns_menu(return_service)
         elif choice == "7":
-            reserve_stock_menu(auth_service, reservation_service)
+            reserve_stock_menu(menus,auth_service, reservation_service)
         elif choice == "0":
             print("Goodbye!")
             break

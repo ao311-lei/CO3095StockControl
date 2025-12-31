@@ -78,3 +78,6 @@ class ReservationService:
             print("Reservation cancelled and stock released")
         else:
             print("Reservation not found or already cancelled")
+
+    def get_reservation(self):
+        return self.reservation_repo.get_all_reservations()
