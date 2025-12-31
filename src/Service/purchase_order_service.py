@@ -40,9 +40,7 @@ class PurchaseOrderService:
             sku = line['sku']
             quantity = line['quantity']
 
-            if not self.product_repo.product_active(sku):
-                print(f"Product {sku} not active")
-                continue
+
 
             valid_lines.append((sku, quantity))
 
@@ -62,7 +60,7 @@ class PurchaseOrderService:
         print(f"Purchase order {po_id} created successfully")
 
     def get_purchase_order(self):
-        return self.repo.get_purchase_order()
+        return self.repo.get_purchase_orders()
 
     def write_audit(self, message):
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")

@@ -122,7 +122,7 @@ def purchase_orders_menu(menus, auth_service, purchase_order_service):
             )
 
         elif choice == "2":
-            orders = purchase_order_service.get_purchase_orders()
+            orders = purchase_order_service.get_purchase_order()
 
             if not orders:
                 print("No purchase orders found.")
