@@ -10,6 +10,8 @@ class Menus:
         print("5) Dashboard")
         print("6) Returns")
         print("7) Budget")
+        print("8) Suppliers")
+        print("9) Reservations")
         print("0) Exit")
         return input("Choose an option: ").strip()
 
@@ -83,6 +85,23 @@ class Menus:
         print("1) Create purchase order")
         print("2) View purchase orders")
         print("3) Update purchase orders")
+        print("0) Back")
+        return input("Choose an option: ").strip()
+
+    def view_suppliers_menu(self):
+        print("\n---------[ SUPPLIERS ]---------")
+        print("1) Create supplier")
+        print("2) Update supplier")
+        print("3) Deactivate supplier")
+        print("4) List suppliers")
+        print("0) Back")
+        return input("Choose an option: ").strip()
+
+    def view_reservations_menu(reservation_service):
+        print("\n----------[ RESERVATIONS ]----------")
+        print("1) Create reservation")
+        print("2) View reservations")
+        print("3) Cancel reservation")
         print("0) Back")
         return input("Choose an option: ").strip()
 

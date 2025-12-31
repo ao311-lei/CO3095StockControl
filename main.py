@@ -1,3 +1,5 @@
+from Repo.purchase_order_repo import PurchaseOrderRepo
+from Repo.reservation_repo import ReservationRepo
 from model.menus import Menus
 from Repo.product_repo import ProductRepo
 from Service.product_service import ProductService
@@ -12,7 +14,12 @@ from Repo.return_repo import ReturnRepo
 from Service.return_service import ReturnService
 from Repo.budget_repo import BudgetRepo
 from Service.budget_service import BudgetService
+from Repo.supplier_repo import SupplierRepo
+from Service.supplier_service import SupplierService
 
+
+from Repo.reservation_repo import ReservationRepo
+from Service.reservation_service import ReservationService
 
 
 def press_enter_to_go_back():
@@ -324,6 +331,56 @@ def products_menu(menus, product_service,favourite_service, auth_service, low_st
         else:
             print("Invalid choice. Try again.")
 
+def reserve_stock_menu(menus, auth_service, reservation_service):
+    while True:
+        choice = menus.view_reservations_menu()
+
+        if choice == "1":
+            if auth_service.current_user is None:
+                print("You are not logged in.")
+                menus.auth_menu(auth_service)
+                continue
+
+            order_id = input("Order ID: ").strip()
+            sku = input("SKU: ").strip()
+
+            try:
+                qty = int(input("Quantity to reserve: ").strip())
+            except ValueError:
+                print("Quantity must be a number")
+                continue
+
+            try:
+                price = float(input("Price: ").strip())
+            except ValueError:
+                print("Price must be a number.")
+                continue
+
+            reservation_service.reserve_stock(order_id, sku, qty, auth_service.current_user, price)
+
+        elif choice == "2":
+            reservations = reservation_service.get_reservation()
+            if not reservations:
+                print("No reservations found.")
+            else:
+                print("\n=== Reservations ===")
+                for r in reservations:
+                    print(f"{r.reservation_id}|{r.order_id}|{r.sku}|{r.quantity}|{r.created_by}|{r.status}|{r.price}\n")
+
+        elif choice == "3":
+            if auth_service.current_user is None:
+                print("You must be logged in.")
+                menus.auth_menu(auth_service)
+                continue
+
+            reservation_id = input("Reservation ID to cancel: ").strip()
+            reservation_service.cancel_reservation(reservation_id, auth_service.current_user)
+
+        elif choice == "0":
+            break
+
+        else:
+            print("Invalid option. Try again.")
 
 def purchase_orders_menu(menus, auth_service, purchase_order_service):
     while True:
@@ -364,14 +421,14 @@ def purchase_orders_menu(menus, auth_service, purchase_order_service):
             )
 
         elif choice == "2":
-            orders = purchase_order_service.get_purchase_order()
+            orders = purchase_order_service.get_purchase_orders()
 
             if not orders:
                 print("No purchase orders found.")
             else:
                 print("\n=== Purchase Orders ===")
                 for po in orders:
-                    print(f"{po.po_id} | ETA: {po.expected_date} | "
+                    print(f"{po.po_id} | Supplier: {po.supplier_id} | ETA: {po.expected_date} | "
                           f"By: {po.created_by} | Status: {po.status}")
         elif choice == "3":
             po_id = input("Purchase Order ID: ").strip()
@@ -477,6 +534,51 @@ def budget_menu(menus, budget_service, product_service):
         else:
             print("Invalid choice. Try again.")
 
+def suppliers_menu(menus, supplier_service):
+    while True:
+        choice = menus.view_suppliers_menu()
+
+        if choice == "1":
+            sid = input("Supplier ID: ").strip()
+            name = input("Name: ").strip()
+            phone = input("Phone (optional): ").strip()
+            email = input("Email (optional): ").strip()
+            print(supplier_service.create_supplier(sid, name, phone, email))
+            press_enter_to_go_back()
+
+        elif choice == "2":
+            sid = input("Supplier ID to update: ").strip()
+            print("Press Enter to keep current value.")
+            name = input("New name: ").strip()
+            phone = input("New phone: ").strip()
+            email = input("New email: ").strip()
+            print(supplier_service.update_supplier(sid, name, phone, email))
+            press_enter_to_go_back()
+
+        elif choice == "3":
+            sid = input("Supplier ID to deactivate: ").strip()
+            confirm = input("Are you sure? (y/n): ").strip().lower()
+            if confirm == "y":
+                print(supplier_service.deactivate_supplier(sid))
+            else:
+                print("Cancelled.")
+            press_enter_to_go_back()
+
+        elif choice == "4":
+            suppliers = supplier_service.list_suppliers()
+            if not suppliers:
+                print("No suppliers found.")
+            else:
+                print("\n--- Suppliers ---")
+                for s in suppliers:
+                    print(str(s))
+            press_enter_to_go_back()
+
+        elif choice == "0":
+            break
+        else:
+            print("Invalid choice.")
+
 
 
 def main():
@@ -486,6 +588,8 @@ def main():
     product_repo = ProductRepo("products.txt")
     favourite_repo = FavouriteRepo("favourites.txt")
     return_repo = ReturnRepo("returns.txt")
+    supplier_repo = SupplierRepo("suppliers.txt")
+    supplier_service = SupplierService(supplier_repo)
 
     auth_service = AuthService(user_repo)
     category_repo = None
@@ -493,6 +597,7 @@ def main():
     stock_service = StockService(product_repo)
     favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
     return_service = ReturnService(product_repo, stock_service, return_repo)
+    reservation_service =ReservationService(product_repo)
     budget_repo = BudgetRepo("budgets.txt")
     budget_service = BudgetService(budget_repo)
 
@@ -526,6 +631,10 @@ def main():
             returns_menu(return_service)
         elif choice== "7":
             budget_menu(menus,budget_service,product_service)
+        elif choice == "8":
+            suppliers_menu(menus, supplier_service)
+        elif choice == "9":
+            reserve_stock_menu(menus,auth_service, reservation_service)
         elif choice == "0":
             print("Goodbye!")
             break
