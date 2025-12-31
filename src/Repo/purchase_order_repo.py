@@ -17,8 +17,8 @@ class PurchaseOrderRepo:
         for line in lines:
             parts = line.strip().split("|")
 
-            if len(parts) == 5 and parts[0] == po_id:
-                parts[4] = new_status
+            if len(parts) == 5 and parts[0] == po_id and parts[4] == "HEADER":
+                parts[3] = new_status
                 new_lines.append("|".join(parts)+"\n")
                 updated = True
             else:
@@ -33,8 +33,8 @@ class PurchaseOrderRepo:
             with open(PO_FILE,"r") as file:
                 for line in file:
                     parts = line.strip().split("|")
-                    if len(parts) == 5 and parts[0] == po_id:
-                        return parts[4]
+                    if len(parts) == 5 and parts[0] == po_id and parts[4] == "HEADER":
+                        return parts[3]
         except FileNotFoundError:
             pass
         return None
