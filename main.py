@@ -515,7 +515,7 @@ def main():
             summary_dashboard_menu(product_service, low_stock_threshold)
         elif choice == "6":
             returns_menu(return_service)
-        elif choice == "7":
+        elif choice == "9":
             reserve_stock_menu(menus,auth_service, reservation_service)
         elif choice == "0":
             print("Goodbye!")
