@@ -10,6 +10,7 @@ class Menus:
         print("5) Dashboard")
         print("6) Returns")
         print("7) Budget")
+        print("8) Suppliers")
         print("0) Exit")
         return input("Choose an option: ").strip()
 
@@ -82,6 +83,15 @@ class Menus:
         print("1) Create purchase order")
         print("2) View purchase orders")
         print("3) Update purchase orders")
+        print("0) Back")
+        return input("Choose an option: ").strip()
+
+    def view_suppliers_menu(self):
+        print("\n---------[ SUPPLIERS ]---------")
+        print("1) Create supplier")
+        print("2) Update supplier")
+        print("3) Deactivate supplier")
+        print("4) List suppliers")
         print("0) Back")
         return input("Choose an option: ").strip()
 

@@ -12,6 +12,9 @@ from Repo.return_repo import ReturnRepo
 from Service.return_service import ReturnService
 from Repo.budget_repo import BudgetRepo
 from Service.budget_service import BudgetService
+from Repo.supplier_repo import SupplierRepo
+from Service.supplier_service import SupplierService
+
 
 
 
@@ -432,6 +435,51 @@ def budget_menu(menus, budget_service):
         else:
             print("Invalid choice. Try again.")
 
+def suppliers_menu(menus, supplier_service):
+    while True:
+        choice = menus.view_suppliers_menu()
+
+        if choice == "1":
+            sid = input("Supplier ID: ").strip()
+            name = input("Name: ").strip()
+            phone = input("Phone (optional): ").strip()
+            email = input("Email (optional): ").strip()
+            print(supplier_service.create_supplier(sid, name, phone, email))
+            press_enter_to_go_back()
+
+        elif choice == "2":
+            sid = input("Supplier ID to update: ").strip()
+            print("Press Enter to keep current value.")
+            name = input("New name: ").strip()
+            phone = input("New phone: ").strip()
+            email = input("New email: ").strip()
+            print(supplier_service.update_supplier(sid, name, phone, email))
+            press_enter_to_go_back()
+
+        elif choice == "3":
+            sid = input("Supplier ID to deactivate: ").strip()
+            confirm = input("Are you sure? (y/n): ").strip().lower()
+            if confirm == "y":
+                print(supplier_service.deactivate_supplier(sid))
+            else:
+                print("Cancelled.")
+            press_enter_to_go_back()
+
+        elif choice == "4":
+            suppliers = supplier_service.list_suppliers()
+            if not suppliers:
+                print("No suppliers found.")
+            else:
+                print("\n--- Suppliers ---")
+                for s in suppliers:
+                    print(str(s))
+            press_enter_to_go_back()
+
+        elif choice == "0":
+            break
+        else:
+            print("Invalid choice.")
+
 
 
 def main():
@@ -441,6 +489,8 @@ def main():
     product_repo = ProductRepo("products.txt")
     favourite_repo = FavouriteRepo("favourites.txt")
     return_repo = ReturnRepo("returns.txt")
+    supplier_repo = SupplierRepo("suppliers.txt")
+    supplier_service = SupplierService(supplier_repo)
 
     auth_service = AuthService(user_repo)
     category_repo = None
@@ -481,6 +531,8 @@ def main():
             returns_menu(return_service)
         elif choice== "7":
             budget_menu(menus,budget_service)
+        elif choice == "8":
+            suppliers_menu(menus, supplier_service)
         elif choice == "0":
             print("Goodbye!")
             break
