@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime,date
-from model.purchase_order import PurchaseOrder, PurchaseOrderLine
+from model.purchase_order import PurchaseOrder, PurchaseOrderLine,POStatus
 from Repo.purchase_order_repo import PurchaseOrderRepo
 from Repo.product_repo import ProductRepo
 
@@ -59,6 +59,39 @@ class PurchaseOrderService:
 
     def get_purchase_order(self):
         return self.repo.get_purchase_orders()
+    def is_valid_transition(self, current, new):
+        if current in [POStatus.COMPLETED, POStatus.CANCELLED]:
+            return False
+
+        if current == POStatus.CREATED:
+            return new in [POStatus.APPROVED, POStatus.CANCELLED]
+
+        if current == POStatus.APPROVED:
+            return new in [POStatus.PARTIAL, POStatus.CANCELLED]
+
+        if current == POStatus.PARTIAL:
+            return new in [POStatus.COMPLETED, POStatus.CANCELLED]
+
+        return False
+    def update_po_status(self, po_id, status, user):
+        status = status.strip().upper()
+
+        if status not in POStatus.ALL:
+            return "Invalid status"
+
+        current_status = self.repo.get_po_status(po_id)
+        if current_status is None:
+            return "Purchase Order not found"
+
+        if not self.is_valid_transition(current_status, status):
+            return "Invalid transition:{current_status} to {status}"
+
+        updated = self.repo.update_po_status(po_id, status)
+        if not updated:
+            return "Purchase Order not updated"
+
+        self.write_audit(f"Purchase order {po_id} updated successfully by {user}")
+        return f"Purchase order {po_id} updated successfully"
 
     def write_audit(self, message):
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
