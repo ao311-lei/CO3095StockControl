@@ -270,3 +270,67 @@ class ProductService:
 
         }
 
+    def estimate_restock_cost_for_sku(self, sku, target_stock_level):
+        sku = (sku or "").strip()
+        if sku == "":
+            return None, "SKU cannot be empty."
+
+        try:
+            target_stock_level = int(target_stock_level)
+        except:
+            return None, "Target stock level must be a whole number."
+
+        if target_stock_level < 0:
+            return None, "Target stock level cannot be negative."
+
+        product = self.product_repo.find_by_sku(sku)
+        if product is None:
+            return None, "Product not found."
+
+        # ignore inactive products
+        if getattr(product, "active", True) is False:
+            return None, "This product is INACTIVE. Reactivate it before planning restock."
+
+        try:
+            current_qty = int(product.quantity)
+            unit_price = float(product.price)
+        except:
+            return None, "Product data is invalid (quantity/price)."
+
+        if current_qty >= target_stock_level:
+            return None, "This product is already at or above the target stock level."
+
+        units_to_buy = target_stock_level - current_qty
+        estimated_cost = units_to_buy * unit_price
+
+        estimate = {
+            "sku": product.sku,
+            "name": product.name,
+            "current_qty": current_qty,
+            "target_qty": target_stock_level,
+            "units_to_buy": units_to_buy,
+            "unit_price": unit_price,
+            "estimated_cost": estimated_cost
+        }
+
+        return estimate, None
+
+    def estimate_restock_cost_for_multiple_skus(self, sku_targets):
+        breakdown = []
+        total_cost = 0.0
+        errors = []
+
+        for sku, target in sku_targets:
+            estimate, error = self.estimate_restock_cost_for_sku(sku, target)
+
+            if error is not None:
+                errors.append(f"{sku}: {error}")
+                continue
+
+            breakdown.append(estimate)
+            total_cost += float(estimate["estimated_cost"])
+
+        return breakdown, total_cost, errors
+
+
+
