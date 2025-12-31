@@ -78,7 +78,12 @@ class Menus:
         print("0) Back")
         return input("Choose an option: ").strip()
 
-
+    def view_reservations_menu(reservation_service):
+        print("\n----------[ RESERVATIONS ]----------")
+        print("1) Create reservation")
+        print("2) View reservations")
+        print("0) Back")
+        return input("Choose an option: ").strip()
 
 
 def category_menu(category_service):
