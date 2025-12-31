@@ -10,6 +10,9 @@ from Repo.favourite_repo import FavouriteRepo
 from Service.favourite_service import FavouriteService
 from Repo.return_repo import ReturnRepo
 from Service.return_service import ReturnService
+from Repo.budget_repo import BudgetRepo
+from Service.budget_service import BudgetService
+
 
 
 def press_enter_to_go_back():
@@ -415,6 +418,21 @@ def returns_menu(return_service):
         result = return_service.process_return(sku, qty, condition)
         print(result)
 
+def budget_menu(menus, budget_service):
+    while True:
+        choice = menus.view_budget_menu()
+
+        if choice == "1":
+            print(budget_service.view_budget())
+        elif choice == "2":
+            amount = input("Enter new budget amount for this month (e.g. 5000): ").strip()
+            print(budget_service.set_budget(amount))
+        elif choice == "0":
+            break
+        else:
+            print("Invalid choice. Try again.")
+
+
 
 def main():
     menus = Menus()
@@ -429,8 +447,9 @@ def main():
     product_service = ProductService(product_repo, category_repo)
     stock_service = StockService(product_repo)
     favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
-    #stock_service = StockService(stock_repo)
     return_service = ReturnService(product_repo, stock_service, return_repo)
+    budget_repo = BudgetRepo("budgets.txt")
+    budget_service = BudgetService(budget_repo, auth_service)
 
     purchase_order_service = PurchaseOrderService()
 
@@ -460,6 +479,8 @@ def main():
             summary_dashboard_menu(product_service, low_stock_threshold)
         elif choice == "6":
             returns_menu(return_service)
+        elif choice== "7":
+            budget_menu(menus,budget_service)
         elif choice == "0":
             print("Goodbye!")
             break
