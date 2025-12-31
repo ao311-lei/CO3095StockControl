@@ -17,8 +17,8 @@ class PurchaseOrderRepo:
         for line in lines:
             parts = line.strip().split("|")
 
-            if len(parts) == 5 and parts[0] == po_id:
-                parts[4] = new_status
+            if len(parts) == 5 and parts[0] == po_id and parts[4] == "HEADER":
+                parts[3] = new_status
                 new_lines.append("|".join(parts)+"\n")
                 updated = True
             else:
@@ -33,8 +33,8 @@ class PurchaseOrderRepo:
             with open(PO_FILE,"r") as file:
                 for line in file:
                     parts = line.strip().split("|")
-                    if len(parts) == 5 and parts[0] == po_id:
-                        return parts[4]
+                    if len(parts) == 5 and parts[0] == po_id and parts[4] == "HEADER":
+                        return parts[3]
         except FileNotFoundError:
             pass
         return None
@@ -45,7 +45,7 @@ class PurchaseOrderRepo:
                 f"{purchase_order.po_id}|"
                 f"{purchase_order.expected_date}|"
                 f"{purchase_order.created_by}|"
-                f"{purchase_order.status}|")
+                f"{purchase_order.status}|HEADER\n")
 
             for line in lines:
                 file.write(
@@ -54,16 +54,14 @@ class PurchaseOrderRepo:
 
     def get_purchase_orders(self):
         orders = []
-
         try:
             with open(PO_FILE,"r") as file:
                 for line in file:
-                    parts= line.split("|")
-                    if len(parts) == 5:
+                    parts= line.strip().split("|")
+                    if len(parts) == 5 and parts[4] == "HEADER":
                         orders.append(PurchaseOrder(
-                            parts[0], parts[1], parts[2], parts[3], parts[4]
+                            parts[0], parts[1], parts[2], parts[3]
                         ))
         except FileNotFoundError:
             pass
-
         return orders
