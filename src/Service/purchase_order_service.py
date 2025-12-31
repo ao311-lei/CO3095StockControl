@@ -47,7 +47,7 @@ class PurchaseOrderService:
             return
 
         po_id = "PO" + datetime.now().strftime("%Y%m%d%H%M%S")
-        po = PurchaseOrder(po_id, expected_date, user, "DRAFT")
+        po = PurchaseOrder(po_id, expected_date, user, "CREATED")
 
         line_objects = []
         for sku, quantity in valid_lines:
