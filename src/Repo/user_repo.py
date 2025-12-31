@@ -12,8 +12,14 @@ class UserRepo:
         users = []
         with open(self.filename, "r") as file:
             for line in file:
-                if line.strip():
-                    username, password, role = line.strip().split(":")
+                line = line.strip()
+                if not line:
+                    continue
+
+                    parts = line.split(":")
+                    username = parts[0].strip()
+                    password = parts[1].strip() if len(parts) > 1 else ""
+                    role = parts[2].strip().upper if len(parts) > 2 and parts[2].strip() else "STAFF"
                     users.append(User(username, password, role))
 
         return users
@@ -31,3 +37,22 @@ class UserRepo:
 
         with open(self.filename, "a") as file:
             file.write(user.username + ":" + user.password + ":" + user.role + "\n")
+
+    def save_all_users(self, users):
+        with open(self.filename, "w") as file:
+            for user in users:
+                file.write(user.username + ":" + user.password + ":" + user.role + "\n")
+
+    def update_role(self, username, new_role):
+        users = self.load_users()
+        new_role = new_role.strip().upper()
+
+        if new_role not in ("STAFF", "ADMIN", "MANAGER"):
+            raise ValueError("Invalid role")
+
+        for user in users:
+            if user.username == username:
+                user.role = new_role
+                self.save_all_users()user
+                return True
+        return False
