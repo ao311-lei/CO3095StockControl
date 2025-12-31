@@ -1,4 +1,4 @@
-class SupplierCatalogService:
+class SupplierCatalogueService:
     def __init__(self, supplier_repo, product_repo, supplier_product_repo):
         self.supplier_repo = supplier_repo
         self.product_repo = product_repo
@@ -41,7 +41,7 @@ class SupplierCatalogService:
             return "Link removed successfully."
         return "That link does not exist."
 
-    def view_supplier_catalog(self, supplier_id):
+    def view_supplier_catalogue(self, supplier_id):
         supplier_id = (supplier_id or "").strip()
         if supplier_id == "":
             return None, "Supplier ID cannot be empty."

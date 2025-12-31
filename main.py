@@ -16,7 +16,8 @@ from Repo.budget_repo import BudgetRepo
 from Service.budget_service import BudgetService
 from Repo.supplier_repo import SupplierRepo
 from Service.supplier_service import SupplierService
-
+from Repo.supplier_product_repo import SupplierProductRepo
+from Service.supplier_catalogue_service import SupplierCatalogueService
 
 from Repo.reservation_repo import ReservationRepo
 from Service.reservation_service import ReservationService
@@ -489,7 +490,41 @@ def budget_menu(menus, budget_service):
         else:
             print("Invalid choice. Try again.")
 
-def suppliers_menu(menus, supplier_service):
+def supplier_catalogue_menu(menus, supplier_catalogue_service):
+    while True:
+        choice = menus.view_supplier_catalogue_menu()
+
+        if choice == "1":
+            supplier_id = input("Enter Supplier ID: ").strip()
+            sku = input("Enter Product SKU: ").strip()
+            print(supplier_catalogue_service.link_product_to_supplier(supplier_id, sku))
+            press_enter_to_go_back()
+
+        elif choice == "2":
+            supplier_id = input("Enter Supplier ID: ").strip()
+            sku = input("Enter Product SKU: ").strip()
+            print(supplier_catalogue_service.unlink_product_from_supplier(supplier_id, sku))
+            press_enter_to_go_back()
+
+        elif choice == "3":
+            supplier_id = input("Enter Supplier ID: ").strip()
+            products, err = supplier_catalogue_service.view_supplier_catalogue(supplier_id)
+            if err:
+                print(err)
+            elif not products:
+                print("No products linked to this supplier.")
+            else:
+                print("\n--- Supplier Catalog ---")
+                for p in products:
+                    print(f"{p.sku} | {p.name} | Qty: {p.quantity} | £{p.price} | {p.category}")
+            press_enter_to_go_back()
+
+        elif choice == "0":
+            break
+        else:
+            print("Invalid choice.")
+
+def suppliers_menu(menus, supplier_service, supplier_catalogue_service):
     while True:
         choice = menus.view_suppliers_menu()
 
@@ -528,12 +563,12 @@ def suppliers_menu(menus, supplier_service):
                 for s in suppliers:
                     print(str(s))
             press_enter_to_go_back()
-
+        elif choice == "5":
+            supplier_catalogue_menu(menus, supplier_catalogue_service)
         elif choice == "0":
             break
         else:
             print("Invalid choice.")
-
 
 
 def main():
@@ -544,8 +579,10 @@ def main():
     favourite_repo = FavouriteRepo("favourites.txt")
     return_repo = ReturnRepo("returns.txt")
     supplier_repo = SupplierRepo("suppliers.txt")
-    supplier_service = SupplierService(supplier_repo)
+    supplier_product_repo = SupplierProductRepo("supplier_products.txt")
 
+    supplier_catalogue_service = SupplierCatalogueService(supplier_repo, product_repo, supplier_product_repo)
+    supplier_service = SupplierService(supplier_repo)
     auth_service = AuthService(user_repo)
     category_repo = None
     product_service = ProductService(product_repo, category_repo)
@@ -587,7 +624,7 @@ def main():
         elif choice== "7":
             budget_menu(menus,budget_service)
         elif choice == "8":
-            suppliers_menu(menus, supplier_service)
+            suppliers_menu(menus, supplier_service, supplier_catalogue_service)
         elif choice == "9":
             reserve_stock_menu(menus,auth_service, reservation_service)
         elif choice == "0":

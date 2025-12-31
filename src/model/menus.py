@@ -93,6 +93,7 @@ class Menus:
         print("2) Update supplier")
         print("3) Deactivate supplier")
         print("4) List suppliers")
+        print("5) Supplier product catalogue")
         print("0) Back")
         return input("Choose an option: ").strip()
 
@@ -101,6 +102,14 @@ class Menus:
         print("1) Create reservation")
         print("2) View reservations")
         print("3) Cancel reservation")
+        print("0) Back")
+        return input("Choose an option: ").strip()
+
+    def view_supplier_catalogue_menu(self):
+        print("\n----[ SUPPLIER PRODUCT CATALOGUE ]----")
+        print("1) Link product to supplier")
+        print("2) Unlink product from supplier")
+        print("3) View supplier catalogue")
         print("0) Back")
         return input("Choose an option: ").strip()
 
@@ -150,13 +159,6 @@ def category_menu(category_service):
         # Catch and display validation errors
         print("Error:", e)
 
-def view_supplier_catalog_menu(self):
-    print("\n----[ SUPPLIER PRODUCT CATALOG ]----")
-    print("1) Link product to supplier")
-    print("2) Unlink product from supplier")
-    print("3) View supplier catalog")
-    print("0) Back")
-    return input("Choose an option: ").strip()
 
 
 
