@@ -1,2 +1,3 @@
 SUP001,ABC Wholesale,07777,ABCWholesale@gmail.com,ACTIVE
 SUP002,Global supplies,,,INACTIVE
+SUP003,UK wholesale,,,ACTIVE
