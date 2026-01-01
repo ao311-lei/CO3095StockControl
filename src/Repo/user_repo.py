@@ -16,11 +16,11 @@ class UserRepo:
                 if not line:
                     continue
 
-                    parts = line.split(":")
-                    username = parts[0].strip()
-                    password = parts[1].strip() if len(parts) > 1 else ""
-                    role = parts[2].strip().upper if len(parts) > 2 and parts[2].strip() else "STAFF"
-                    users.append(User(username, password, role))
+                parts = line.split(":")
+                username = parts[0].strip()
+                password = parts[1].strip()
+                role = parts[2].strip().upper() if len(parts) > 2 and parts[2].strip() else "STAFF"
+                users.append(User(username, password, role))
 
         return users
 
@@ -53,6 +53,6 @@ class UserRepo:
         for user in users:
             if user.username == username:
                 user.role = new_role
-                self.save_all_users()
+                self.save_all_users(users)
                 return True
         return False

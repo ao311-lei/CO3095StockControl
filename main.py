@@ -415,6 +415,22 @@ def returns_menu(return_service):
         result = return_service.process_return(sku, qty, condition)
         print(result)
 
+def assign_role_menu(menus, auth_service):
+    while True:
+        choice = menus.view_assign_roles()
+
+        if auth_service.current_user is None:
+            print("You must be logged in.")
+            return
+
+        if auth_service.current_user.role != "ADMIN":
+            print("Access denied: ADMIN only.")
+            return
+
+        username = input("Enter username to update: ").strip()
+        new_role = input("Enter new role (STAFF/MANAGER/ADMIN): ").strip()
+
+        auth_service.assign_role(username, new_role)
 
 def main():
     menus = Menus()
@@ -453,13 +469,15 @@ def main():
         elif choice == "3":
             purchase_orders_menu(menus, auth_service, purchase_order_service)
         elif choice == "4":
-            auth_service.logout()
-            print("Logged out successfully.")
-            menus.auth_menu(auth_service)
+            assign_role_menu(menus, auth_service)
         elif choice == "5":
             summary_dashboard_menu(product_service, low_stock_threshold)
         elif choice == "6":
             returns_menu(return_service)
+        elif choice == "10":
+            auth_service.logout()
+            print("Logged out successfully.")
+            menus.auth_menu(auth_service)
         elif choice == "0":
             print("Goodbye!")
             break

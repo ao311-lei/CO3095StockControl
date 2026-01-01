@@ -9,8 +9,10 @@ class AuthService:
     def _hash_password(self, password):
         return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
-    def sign_up(self, username, password, role="staff"):
-        if username.strip() == "":
+    def sign_up(self, username, password, role="STAFF"):
+        username = username.strip().lower()
+
+        if username == "":
             raise ValueError("Username cannot be empty")
 
         if len(password) < 8:
@@ -59,12 +61,12 @@ class AuthService:
             print("You can't change your own role")
             return False
 
-        updated = self.user_repo.update_user(target_username, new_role)
+        updated = self.user_repo.update_role(target_username, new_role)
         if not updated:
             print("User not found")
             return False
 
-        print("You have successfully changed your role")
+        print("You have successfully changed role")
         return True
 
     def logout(self):
