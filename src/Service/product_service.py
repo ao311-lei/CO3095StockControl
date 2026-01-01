@@ -174,6 +174,31 @@ class ProductService:
 
         return results
 
+    def update_product_description(self, sku, description):
+        if sku is None or sku.strip() == "":
+            raise ValueError("SKU cannot be empty")
+
+        product = self.product_repo.get_product(sku)
+        if product is None:
+            raise ValueError("Product not found")
+
+        if description is None or description.strip() == "":
+            raise ValueError("Description cannot be empty")
+
+        description = description.strip()
+
+        if len(description) > 300:
+            raise ValueError("Description too long (max 300 characters)")
+
+        if product.description == description:
+            raise ValueError("Description is unchanged")
+
+        product.description = description
+        self.product_repo.update_product(sku, description=description)
+
+        return product.description
+
+
     def view_all_products_with_status(self, low_stock=5):
         products = self.product_repo.get_all_products()
         results = []
