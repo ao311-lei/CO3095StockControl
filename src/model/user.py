@@ -8,4 +8,4 @@ class User:
         return self.role == 'ADMIN'
 
     def is_manager(self):
-        return self.role in ("MANAGER", "STAFF")
+        return self.role in ("MANAGER", "ADMIN")

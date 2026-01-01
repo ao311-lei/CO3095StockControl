@@ -1,33 +1,37 @@
+
 class Menus:
-    def view_main_menu(self):
+    def view_main_menu(self, current_user):
         print("\n==============================")
         print("     [ STOCK CONTROL SYSTEM ]   ")
         print("==============================")
         print("1) Products")
-        print("2) Stock")
-        print("3) Purchase Orders")
         print("4) Account")
         print("5) Dashboard")
         print("6) Returns")
-        print("7) Budget")
-        print("8) Suppliers")
         print("9) Reservations")
-        print("0) Exit")
+        if current_user and current_user.is_manager():
+            print("2) Stock")
+            print("3) Purchase Orders")
+            print("7) Budget")
+            print("8) Suppliers")
+            print("0) Exit")
         return input("Choose an option: ").strip()
 
-    def view_products_menu(self):
+    def view_products_menu(self, current_user):
         print("\n----------[ PRODUCTS ]----------")
         print("1) View all products")
         print("2) Search products")
         print("3) Filter products")
-        print("4) Add Product")
-        print("5) Remove Product")
-        print("6) Update Product")
-        print("7) Low Stock Alerts")
         print("8) View favourite products")
-        print("9) Set Low Stock Threshold")
-        print("10) Deactivate and reactivate products")
         print("0) Back")
+        if current_user and current_user.is_manager():
+            print("4) Add Product")
+            print("5) Remove Product")
+            print("6) Update Product")
+            print("7) Low Stock Alerts")
+            print("9) Set Low Stock Threshold")
+        if current_user and current_user.is_admin():
+            print("10) Deactivate and reactivate products")
         return input("Choose an option: ").strip()
 
     def view_stock_menu(self):
@@ -79,6 +83,29 @@ class Menus:
 
             else:
                 print("Invalid option")
+            continue
+
+        user = auth_service.current_user
+        print(f"Logged in as: {user.username} ({user.role})")
+        print("1) Logout")
+
+        # Admin-only option
+        if user.role == "ADMIN":
+            print("2) Assign roles")
+
+        print("0) Back")
+        choice = input("Choose option: ").strip()
+
+        if choice == "1":
+            auth_service.logout()
+            print("Logged out.")
+            return
+        elif choice == "2" and user.role == "ADMIN":
+            return "ASSIGN_ROLES"  # signal to main
+        elif choice == "0":
+            return
+        else:
+            print("Invalid option")
 
     def view_purchase_orders_menu(purchase_orders_service):
         print("\n----------[ PURCHASE ORDERS ]----------")
