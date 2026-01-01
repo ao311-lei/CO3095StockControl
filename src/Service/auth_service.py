@@ -9,8 +9,10 @@ class AuthService:
     def _hash_password(self, password):
         return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
-    def sign_up(self, username, password, role="staff"):
-        if username.strip() == "":
+    def sign_up(self, username, password, role="STAFF"):
+        username = username.strip().lower()
+
+        if username == "":
             raise ValueError("Username cannot be empty")
 
         if len(password) < 8:
@@ -41,5 +43,32 @@ class AuthService:
         self.current_user = user
         return True
 
+    def assign_role(self, target_username, new_role):
+        if self.current_user is None:
+            print("You must be logged in")
+            return False
+
+        if getattr(self.current_user, "role", "").upper() != "ADMIN":
+            print("Access denied: Admin role must be 'ADMIN'")
+            return False
+
+        new_role = new_role.strip().upper()
+        if new_role not in ["ADMIN", "STAFF","MANAGER"]:
+            print("Invalid role. Choose 'ADMIN', 'STAFF' or 'MANAGER'")
+            return False
+
+        if target_username == self.current_user.username:
+            print("You can't change your own role")
+            return False
+
+        updated = self.user_repo.update_role(target_username, new_role)
+        if not updated:
+            print("User not found")
+            return False
+
+        print("You have successfully changed role")
+        return True
+
     def logout(self):
-        pass
+        self.current_user = None
+        return True

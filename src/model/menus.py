@@ -114,6 +114,10 @@ class Menus:
         print("0) Back")
         return input("Choose an option: ").strip()
 
+    def view_assign_roles(auth_service):
+        print("\n----------[ ASSIGN ROLE ]----------")
+        print("1) Update role")
+
 
 def category_menu(category_service):
     print("\n----------[ CATEGORIES ]----------")
@@ -159,8 +163,6 @@ def category_menu(category_service):
     except ValueError as e:
         # Catch and display validation errors
         print("Error:", e)
-
-
 
 
 def auth_menu(auth_service):
