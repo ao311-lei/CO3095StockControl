@@ -206,7 +206,7 @@ def set_low_stock_threshold(current_threshold):
 def products_menu(menus, product_service,favourite_service, auth_service, low_stock_threshold):
 
     while True:
-        choice = menus.view_products_menu()
+        choice = menus.view_products_menu(auth_service.current_user)
 
         if choice == "1":
 
@@ -658,7 +658,7 @@ def main():
     low_stock_threshold = 5
 
     while True:
-        choice = menus.view_main_menu()
+        choice = menus.view_main_menu(auth_service.current_user)
 
         if choice == "1":
             low_stock_threshold = products_menu(
@@ -673,7 +673,9 @@ def main():
         elif choice == "3":
             purchase_orders_menu(menus, auth_service, purchase_order_service)
         elif choice == "4":
-            assign_role_menu(menus, auth_service)
+            result = menus.auth_menu(auth_service)
+            if result == "ASSIGN_ROLES":
+                assign_role_menu(menus, auth_service)
         elif choice == "5":
             summary_dashboard_menu(product_service, low_stock_threshold)
         elif choice == "6":
