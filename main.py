@@ -383,7 +383,7 @@ def reserve_stock_menu(menus, auth_service, reservation_service):
         else:
             print("Invalid option. Try again.")
 
-def purchase_orders_menu(menus, auth_service, purchase_order_service):
+def purchase_orders_menu(menus, auth_service, purchase_order_service, budget_service):
     while True:
         choice = menus.view_purchase_orders_menu()
 
@@ -418,7 +418,7 @@ def purchase_orders_menu(menus, auth_service, purchase_order_service):
             created_by = auth_service.current_user.username
 
             purchase_order_service.create_purchase_order(
-          expected_date, lines, created_by
+          expected_date, lines, created_by, budget_service
             )
 
         elif choice == "2":
@@ -483,8 +483,8 @@ def budget_menu(menus, budget_service, product_service):
         if choice == "1":
             print(budget_service.view_monthly_budget())
         elif choice == "2":
-            amount = input(" Enter monthly budget amount for restocking : ").strip()
-            print(budget_service.set_monthly_budget(amount))
+            budget = input(" Enter monthly budget amount for restocking : ").strip()
+            print(budget_service.set_monthly_budget(budget))
         elif choice == "3":
             print("\nEnter SKUs to estimate restock for (press Enter on SKU to finish).")
 
@@ -657,7 +657,7 @@ def main():
             else:
                 stock_menu(menus, auth_service, stock_service)
         elif choice == "3":
-            purchase_orders_menu(menus, auth_service, purchase_order_service)
+            purchase_orders_menu(menus, auth_service, purchase_order_service, budget_service)
         elif choice == "4":
             auth_service.logout()
             print("Logged out successfully.")
