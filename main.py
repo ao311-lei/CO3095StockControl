@@ -459,7 +459,7 @@ def summary_dashboard_menu(product_service, low_stock_threshold):
     print("Low stock %:", str(summary["low_stock_percent"]) + "%")
     print("Out of stock %:", str(summary["out_of_stock_percent"]) + "%")
     print("==============================\n")
-    input("Press Enter to go back...")
+
 
 def returns_menu(return_service):
     print("\n----------[ RETURNS ]----------")
@@ -622,7 +622,15 @@ def dashboard_charts_menu(dashboard_chart_service, low_stock_threshold):
     for line in lines:
         print(line)
 
+
+def dashboard_menu( product_service,dashboard_chart_service,low_stock_threshold):
+    # Show summary first
+    summary_dashboard_menu(product_service, low_stock_threshold)
+    # Then show charts
+    dashboard_charts_menu(dashboard_chart_service, low_stock_threshold)
+    # one pause at the end
     input("\nPress Enter to go back...")
+
 
 def assign_role_menu(menus, auth_service):
     while True:
@@ -686,9 +694,7 @@ def main():
             if result == "ASSIGN_ROLES":
                 assign_role_menu(menus, auth_service)
         elif choice == "5":
-            summary_dashboard_menu(product_service, low_stock_threshold)
-            dashboard_charts_menu(dashboard_chart_service, low_stock_threshold)
-
+            dashboard_menu(product_service,dashboard_chart_service,low_stock_threshold)
         elif choice == "6":
             returns_menu(return_service)
         elif choice == "10":
