@@ -432,7 +432,7 @@ def purchase_orders_menu(menus, auth_service, purchase_order_service, budget_ser
             else:
                 print("\n=== Purchase Orders ===")
                 for po in orders:
-                    print(f"{po.po_id} | Supplier: {po.supplier_id} | ETA: {po.expected_date} | "
+                    print(f"{po.po_id} | ETA: {po.expected_date} | "
                           f"By: {po.created_by} | Status: {po.status}")
         elif choice == "3":
             po_id = input("Purchase Order ID: ").strip()
