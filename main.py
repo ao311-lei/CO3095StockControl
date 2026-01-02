@@ -641,6 +641,8 @@ def main():
     return_repo = ReturnRepo("src/data/returns.txt")
     supplier_repo = SupplierRepo("src/data/suppliers.txt")
     supplier_product_repo = SupplierProductRepo("src/data/supplier_products.txt")
+    reservation_service = ReservationService(product_repo)
+    budget_service = BudgetService(supplier_repo)
 
     supplier_catalogue_service = SupplierCatalogueService(supplier_repo, product_repo, supplier_product_repo)
     supplier_service = SupplierService(supplier_repo)
