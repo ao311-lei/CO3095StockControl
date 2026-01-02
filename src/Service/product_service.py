@@ -1,6 +1,9 @@
 from Repo.product_repo import ProductRepo
 from Repo.category_repo import CategoryRepo
 from model.product import Product
+from datetime import datetime
+
+AUDIT_FILE = "src/data/audit_log.txt"
 
 
 class ProductService:
@@ -8,7 +11,7 @@ class ProductService:
         self.product_repo = product_repo
         self.category_repo = category_repo
 
-    def add_new_product(self, sku, name, description, quantity, price, category=None):
+    def add_new_product(self, sku, name, description, quantity, price, category=None, user=None):
         if sku == "":
             return "SKU cannot be empty"
         if name == "":
@@ -37,12 +40,13 @@ class ProductService:
         if existing != None:
             return "That SKU already exists"
 
-        new_product = Product(sku, name, description, quantity, price, category, active=True)
+        new_product = Product(sku, name, description, quantity, price, category, active=True,user=None)
         self.product_repo.add_product(new_product)
+        self.write_audit(f"USER={user} ACTION=PRODUCT_ADD sku={sku} qty={quantity} price={price}")
 
         return "Product added successfully"
 
-    def update_product(self, sku, name, description, quantity, price, category):
+    def update_product(self, sku, name, description, quantity, price, category,user=None):
         if sku == "":
             return "SKU cannot be empty"
 
@@ -74,11 +78,12 @@ class ProductService:
         )
 
         if updated:
+            self.write_audit(f"USER={user} ACTION=PRODUCT_UPDATE sku={sku}")
             return "Product updated successfully"
         else:
             return "Product not found"
 
-    def remove_product(self, sku):
+    def remove_product(self, sku, user=None):
         if sku == "":
             return "SKU cannot be empty"
 
@@ -88,11 +93,12 @@ class ProductService:
 
         removed = self.product_repo.remove_by_sku(sku)
         if removed:
+            self.write_audit(f"USER={user} ACTION=PRODUCT_REMOVE sku={sku}")
             return "Product removed successfully"
         else:
             return "Product not found"
 
-    def deactivate_product(self, sku):
+    def deactivate_product(self, sku, user=None):
         sku = (sku or "").strip()
         if sku == "":
             return "SKU cannot be empty"
@@ -106,6 +112,7 @@ class ProductService:
 
         p.active = False
         self.product_repo.save_product(p)
+        self.write_audit(f"USER={user} ACTION=PRODUCT_DEACTIVATE sku={sku}")
         return "Product deactivated successfully"
 
     def reactivate_product(self, sku):
@@ -356,6 +363,11 @@ class ProductService:
             total_cost += float(estimate["estimated_cost"])
 
         return breakdown, total_cost, errors
+
+    def write_audit(self, message):
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open(AUDIT_FILE, "a") as f:
+            f.write(f"{timestamp} - {message}\n")
 
 
 

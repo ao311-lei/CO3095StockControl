@@ -1,5 +1,5 @@
 class SupplierProductRepo:
-    def __init__(self, filename="supplier_products.txt"):
+    def __init__(self, filename="src/data/supplier_products.txt"):
         self.filename = filename
         try:
             open(self.filename, "r").close()

@@ -1,5 +1,6 @@
 from Repo.purchase_order_repo import PurchaseOrderRepo
 from Repo.reservation_repo import ReservationRepo
+from Service import activity_service
 from model.menus import Menus
 from Repo.product_repo import ProductRepo
 from Service.product_service import ProductService
@@ -19,6 +20,7 @@ from Service.supplier_service import SupplierService
 from Repo.supplier_product_repo import SupplierProductRepo
 from Service.supplier_catalogue_service import SupplierCatalogueService
 from Service.dashboard_chart_service import DashboardChartService
+from Service.activity_service import ActivityService
 
 from Repo.reservation_repo import ReservationRepo
 from Service.reservation_service import ReservationService
@@ -384,7 +386,7 @@ def reserve_stock_menu(menus, auth_service, reservation_service):
         else:
             print("Invalid option. Try again.")
 
-def purchase_orders_menu(menus, auth_service, purchase_order_service):
+def purchase_orders_menu(menus, auth_service, purchase_order_service, budget_service):
     while True:
         choice = menus.view_purchase_orders_menu()
 
@@ -419,7 +421,7 @@ def purchase_orders_menu(menus, auth_service, purchase_order_service):
             created_by = auth_service.current_user.username
 
             purchase_order_service.create_purchase_order(
-          expected_date, lines, created_by
+          expected_date, lines, created_by, budget_service
             )
 
         elif choice == "2":
@@ -649,14 +651,103 @@ def assign_role_menu(menus, auth_service):
 
         auth_service.assign_role(username, new_role)
 
+def print_activity_stats(stats):
+    def clean_user(user):
+        if user is None or str(user) == "None" or str(user).strip() == "":
+            return "UNKNOWN"
+        return str(user)
+
+    print("\n==============================")
+    print("     [ USER ACTIVITY STATS ]")
+    print("==============================")
+
+    # Totals
+    total_actions = sum(stats["total_by_action"].values())
+    print(f"Total actions logged: {total_actions}")
+
+    # Top users
+    print("\n--- Top Users ---")
+    if not stats["total_by_user"]:
+        print("No activity found.")
+    else:
+        for user, count in stats["total_by_user"].most_common(10):
+            print(f"{clean_user(user):<15} {count}")
+
+    # Top actions
+    print("\n--- Top Actions ---")
+    if not stats["total_by_action"]:
+        print("No actions found.")
+    else:
+        for action, count in stats["total_by_action"].most_common(10):
+            print(f"{action:<20} {count}")
+
+    # Per-user breakdown
+    print("\n--- Breakdown per User ---")
+    actions_by_user = stats.get("actions_by_user", {})
+    if not actions_by_user:
+        print("No breakdown available.")
+    else:
+        for user, actions_counter in actions_by_user.items():
+            user_label = clean_user(user)
+            print(f"\n{user_label}:")
+            for action, count in actions_counter.most_common():
+                print(f"  - {action:<18} {count}")
+
+    # Failed logins
+    print("\n--- Failed Logins ---")
+    if not stats["failed_logins_by_user"]:
+        print("None")
+    else:
+        for user, count in stats["failed_logins_by_user"].most_common(10):
+            print(f"{clean_user(user):<15} {count}")
+
+    input("\nPress Enter to go back...")
+
+
+def view_activity_menu(menus,auth_service, activity_service):
+        if auth_service.current_user is None:
+            print("You must be logged in.")
+            return
+
+        if auth_service.current_user.role != "ADMIN":
+            print("Access denied: ADMIN only.")
+            return
+
+        while True:
+            choice = menus.view_admin_activity()
+            if choice == "1":
+                stats = activity_service.get_stats(hours=24)
+                print_activity_stats(stats)
+
+            elif choice == "2":
+                stats = activity_service.get_stats(hours=168)
+                print_activity_stats(stats)
+
+            elif choice == "0":
+                return
+
+            else:
+                print("Invalid option.")
+        stats = activity_service.get_stats(hours=24)
+        print(stats)
+
+
 def main():
     menus = Menus()
-    user_repo = UserRepo("users.txt")
+    user_repo = UserRepo("src/data/users.txt")
     stock_repo = StockRepo("stocks.txt")
+    product_repo = ProductRepo("src/data/products.txt")
+    favourite_repo = FavouriteRepo("src/data/favourites.txt")
+    return_repo = ReturnRepo("src/data/returns.txt")
+    supplier_repo = SupplierRepo("src/data/suppliers.txt")
+    supplier_product_repo = SupplierProductRepo("src/data/supplier_products.txt")
+    reservation_service = ReservationService(product_repo)
+
     product_repo = ProductRepo("products.txt")
     favourite_repo = FavouriteRepo("favourites.txt")
     return_repo = ReturnRepo("returns.txt")
     supplier_repo = SupplierRepo("suppliers.txt")
+    activity_service = ActivityService("src/data/audit_log.txt")
     supplier_product_repo = SupplierProductRepo("supplier_products.txt")
 
     supplier_catalogue_service = SupplierCatalogueService(supplier_repo, product_repo, supplier_product_repo)
@@ -669,9 +760,13 @@ def main():
     #stock_service = StockService(stock_repo)
     return_service = ReturnService(product_repo, stock_service, return_repo)
     dashboard_chart_service = DashboardChartService(product_repo)
+    budget_repo = BudgetRepo("src/data/budgets.txt")
+    budget_service = BudgetService(budget_repo)
+
+
     purchase_order_service = PurchaseOrderService()
 
-    menus.auth_menu(auth_service)
+    menus.auth_menu(auth_service, activity_service)
     low_stock_threshold = 5
 
     while True:
@@ -684,15 +779,17 @@ def main():
         elif choice == "2":
             if auth_service.current_user is None:
                 print("Authorization failed. Please login first.")
-                menus.auth_menu(auth_service)
+                menus.auth_menu(auth_service, activity_service)
             else:
                 stock_menu(menus, auth_service, stock_service)
         elif choice == "3":
-            purchase_orders_menu(menus, auth_service, purchase_order_service)
+            purchase_orders_menu(menus, auth_service, purchase_order_service, budget_service)
         elif choice == "4":
-            result = menus.auth_menu(auth_service)
+            result = menus.auth_menu(auth_service, activity_service)
             if result == "ASSIGN_ROLES":
                 assign_role_menu(menus, auth_service)
+            if result == "VIEW_ACTIVITIES":
+                view_activity_menu(menus, auth_service, activity_service)
         elif choice == "5":
             dashboard_menu(product_service,dashboard_chart_service,low_stock_threshold)
         elif choice == "6":
