@@ -5,16 +5,17 @@ class Menus:
         print("     [ STOCK CONTROL SYSTEM ]   ")
         print("==============================")
         print("1) Products")
-        print("4) Account")
-        print("5) Dashboard")
-        print("6) Returns")
-        print("9) Reservations")
         if current_user and current_user.is_manager():
             print("2) Stock")
             print("3) Purchase Orders")
+        print("4) Account")
+        print("5) Dashboard")
+        print("6) Returns")
+        if current_user and current_user.is_manager():
             print("7) Budget")
             print("8) Suppliers")
-            print("0) Exit")
+            print("9) Reservations")
+        print("0) Exit")
         return input("Choose an option: ").strip()
 
     def view_products_menu(self, current_user):
