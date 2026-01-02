@@ -2,7 +2,7 @@ import hashlib
 from model.user import User
 from datetime import datetime
 
-AUDIT_FILE = "audit_log.txt"
+AUDIT_FILE = "src/data/audit_log.txt"
 
 class AuthService:
     def __init__(self, user_repo):

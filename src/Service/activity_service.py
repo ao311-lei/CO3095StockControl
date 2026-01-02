@@ -1,7 +1,7 @@
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta
 
-AUDIT_FILE = "audit_log.txt"
+AUDIT_FILE = "src/data/audit_log.txt"
 
 
 class ActivityService:

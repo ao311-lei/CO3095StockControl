@@ -730,7 +730,7 @@ def main():
     favourite_repo = FavouriteRepo("favourites.txt")
     return_repo = ReturnRepo("returns.txt")
     supplier_repo = SupplierRepo("suppliers.txt")
-    activity_service = ActivityService("audit_log.txt")
+    activity_service = ActivityService("src/data/audit_log.txt")
     supplier_product_repo = SupplierProductRepo("supplier_products.txt")
 
     supplier_catalogue_service = SupplierCatalogueService(supplier_repo, product_repo, supplier_product_repo)

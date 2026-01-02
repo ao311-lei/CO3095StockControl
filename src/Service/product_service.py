@@ -3,7 +3,7 @@ from Repo.category_repo import CategoryRepo
 from model.product import Product
 from datetime import datetime
 
-AUDIT_FILE = 'audit_log.txt'
+AUDIT_FILE = "src/data/audit_log.txt"
 
 
 class ProductService:

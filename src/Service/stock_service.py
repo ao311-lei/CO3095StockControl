@@ -1,7 +1,7 @@
 from Repo.product_repo import ProductRepo
 from datetime import datetime
 
-AUDIT_FILE = "audit_log.txt"
+AUDIT_FILE = "src/data/audit_log.txt"
 
 
 class StockService:
