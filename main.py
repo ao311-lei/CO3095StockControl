@@ -634,9 +634,60 @@ def assign_role_menu(menus, auth_service):
 
         auth_service.assign_role(username, new_role)
 
+def print_activity_stats(stats):
+    def clean_user(user):
+        if user is None or str(user) == "None" or str(user).strip() == "":
+            return "UNKNOWN"
+        return str(user)
+
+    print("\n==============================")
+    print("     [ USER ACTIVITY STATS ]")
+    print("==============================")
+
+    # Totals
+    total_actions = sum(stats["total_by_action"].values())
+    print(f"Total actions logged: {total_actions}")
+
+    # Top users
+    print("\n--- Top Users ---")
+    if not stats["total_by_user"]:
+        print("No activity found.")
+    else:
+        for user, count in stats["total_by_user"].most_common(10):
+            print(f"{clean_user(user):<15} {count}")
+
+    # Top actions
+    print("\n--- Top Actions ---")
+    if not stats["total_by_action"]:
+        print("No actions found.")
+    else:
+        for action, count in stats["total_by_action"].most_common(10):
+            print(f"{action:<20} {count}")
+
+    # Per-user breakdown
+    print("\n--- Breakdown per User ---")
+    actions_by_user = stats.get("actions_by_user", {})
+    if not actions_by_user:
+        print("No breakdown available.")
+    else:
+        for user, actions_counter in actions_by_user.items():
+            user_label = clean_user(user)
+            print(f"\n{user_label}:")
+            for action, count in actions_counter.most_common():
+                print(f"  - {action:<18} {count}")
+
+    # Failed logins
+    print("\n--- Failed Logins ---")
+    if not stats["failed_logins_by_user"]:
+        print("None")
+    else:
+        for user, count in stats["failed_logins_by_user"].most_common(10):
+            print(f"{clean_user(user):<15} {count}")
+
+    input("\nPress Enter to go back...")
+
+
 def view_activity_menu(menus,auth_service, activity_service):
-    while True:
-        choice = menus.view_admin_activity()
         if auth_service.current_user is None:
             print("You must be logged in.")
             return
@@ -644,7 +695,23 @@ def view_activity_menu(menus,auth_service, activity_service):
         if auth_service.current_user.role != "ADMIN":
             print("Access denied: ADMIN only.")
             return
-        stats = activity_service.get_stats()
+
+        while True:
+            choice = menus.view_admin_activity()
+            if choice == "1":
+                stats = activity_service.get_stats(hours=24)
+                print_activity_stats(stats)
+
+            elif choice == "2":
+                stats = activity_service.get_stats(hours=168)
+                print_activity_stats(stats)
+
+            elif choice == "0":
+                return
+
+            else:
+                print("Invalid option.")
+        stats = activity_service.get_stats(hours=24)
         print(stats)
 
 
