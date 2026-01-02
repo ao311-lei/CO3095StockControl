@@ -634,13 +634,13 @@ def assign_role_menu(menus, auth_service):
 
 def main():
     menus = Menus()
-    user_repo = UserRepo("users.txt")
+    user_repo = UserRepo("src/data/users.txt")
     stock_repo = StockRepo("stocks.txt")
-    product_repo = ProductRepo("products.txt")
-    favourite_repo = FavouriteRepo("favourites.txt")
-    return_repo = ReturnRepo("returns.txt")
-    supplier_repo = SupplierRepo("suppliers.txt")
-    supplier_product_repo = SupplierProductRepo("supplier_products.txt")
+    product_repo = ProductRepo("src/data/products.txt")
+    favourite_repo = FavouriteRepo("src/data/favourites.txt")
+    return_repo = ReturnRepo("src/data/returns.txt")
+    supplier_repo = SupplierRepo("src/data/suppliers.txt")
+    supplier_product_repo = SupplierProductRepo("src/data/supplier_products.txt")
 
     supplier_catalogue_service = SupplierCatalogueService(supplier_repo, product_repo, supplier_product_repo)
     supplier_service = SupplierService(supplier_repo)
