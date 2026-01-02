@@ -18,6 +18,7 @@ from Repo.supplier_repo import SupplierRepo
 from Service.supplier_service import SupplierService
 from Repo.supplier_product_repo import SupplierProductRepo
 from Service.supplier_catalogue_service import SupplierCatalogueService
+from Service.dashboard_chart_service import DashboardChartService
 
 from Repo.reservation_repo import ReservationRepo
 from Service.reservation_service import ReservationService
@@ -615,6 +616,14 @@ def suppliers_menu(menus, supplier_service, supplier_catalogue_service):
         else:
             print("Invalid choice.")
 
+def dashboard_charts_menu(dashboard_chart_service, low_stock_threshold):
+    lines = dashboard_chart_service.build_dashboard_chart_lines(low_stock_threshold)
+
+    for line in lines:
+        print(line)
+
+    input("\nPress Enter to go back...")
+
 def assign_role_menu(menus, auth_service):
     while True:
         choice = menus.view_assign_roles()
@@ -651,7 +660,7 @@ def main():
     favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
     #stock_service = StockService(stock_repo)
     return_service = ReturnService(product_repo, stock_service, return_repo)
-
+    dashboard_chart_service = DashboardChartService(product_repo)
     purchase_order_service = PurchaseOrderService()
 
     menus.auth_menu(auth_service)
@@ -678,6 +687,8 @@ def main():
                 assign_role_menu(menus, auth_service)
         elif choice == "5":
             summary_dashboard_menu(product_service, low_stock_threshold)
+            dashboard_charts_menu(dashboard_chart_service, low_stock_threshold)
+
         elif choice == "6":
             returns_menu(return_service)
         elif choice == "10":
