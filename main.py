@@ -652,6 +652,7 @@ def main():
     #stock_service = StockService(stock_repo)
     return_service = ReturnService(product_repo, stock_service, return_repo)
 
+
     purchase_order_service = PurchaseOrderService()
 
     menus.auth_menu(auth_service)
