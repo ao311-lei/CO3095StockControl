@@ -1,4 +1,5 @@
 from Repo.product_repo import ProductRepo
+from datetime import datetime
 
 AUDIT_FILE = "audit_log.txt"
 
@@ -6,6 +7,12 @@ AUDIT_FILE = "audit_log.txt"
 class StockService:
     def __init__(self, product_repo: ProductRepo):
         self.product_repo = product_repo
+
+    def write_audit(self,message):
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open(AUDIT_FILE, "a") as f:
+            f.write(f"{timestamp} - {message}\n")
+
 
     def record_stock_increase(self, sku, amount,user=None):
         if amount <= 0:
@@ -20,9 +27,10 @@ class StockService:
 
         product.quantity += amount
         self.product_repo.save_products()
+        self.write_audit(f"USER={user} ACTION=STOCK_DECREASE sku={sku} amount={amount} new_qty={product.quantity}")
         return product.quantity
 
-    def record_stock_decrease(self, sku, amount):
+    def record_stock_decrease(self, sku, amount,user=None):
         if amount <= 0:
             raise ValueError("Decrease amount must be a positive integer")
 
@@ -38,5 +46,5 @@ class StockService:
 
         product.quantity -= amount
         self.product_repo.save_products()
-        write_audit(f"USER={user} ACTION=STOCK_DECREASE sku={sku} amount={amount} new_qty={product.quantity}")
+        self.write_audit(f"USER={user} ACTION=STOCK_DECREASE sku={sku} amount={amount} new_qty={product.quantity}")
         return product.quantity

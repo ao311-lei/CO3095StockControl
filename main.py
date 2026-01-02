@@ -19,6 +19,7 @@ from Repo.supplier_repo import SupplierRepo
 from Service.supplier_service import SupplierService
 from Repo.supplier_product_repo import SupplierProductRepo
 from Service.supplier_catalogue_service import SupplierCatalogueService
+from Service.activity_service import ActivityService
 
 from Repo.reservation_repo import ReservationRepo
 from Service.reservation_service import ReservationService
@@ -643,7 +644,8 @@ def view_activity_menu(menus,auth_service, activity_service):
         if auth_service.current_user.role != "ADMIN":
             print("Access denied: ADMIN only.")
             return
-        print(activity_service.get_stats())
+        stats = activity_service.get_stats()
+        print(stats)
 
 
 def main():
@@ -654,6 +656,7 @@ def main():
     favourite_repo = FavouriteRepo("favourites.txt")
     return_repo = ReturnRepo("returns.txt")
     supplier_repo = SupplierRepo("suppliers.txt")
+    activity_service = ActivityService("audit_log.txt")
     supplier_product_repo = SupplierProductRepo("supplier_products.txt")
 
     supplier_catalogue_service = SupplierCatalogueService(supplier_repo, product_repo, supplier_product_repo)
