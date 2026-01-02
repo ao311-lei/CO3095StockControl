@@ -6,3 +6,4 @@ anettaxo,SKU006
 anettaxo,SKU002
 toniaf,SKU001
 toniaf,SKU006
+anettaxo,SKU008
