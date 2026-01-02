@@ -12,11 +12,9 @@ class Menus:
         print("5) Dashboard")
         print("6) Returns")
         if current_user and current_user.is_manager():
-            print("2) Stock")
-            print("3) Purchase Orders")
             print("7) Budget")
             print("8) Suppliers")
-            print("9) Reservations")
+        print("9) Reservations")
         print("0) Exit")
         return input("Choose an option: ").strip()
 
