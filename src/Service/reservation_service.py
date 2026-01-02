@@ -27,7 +27,7 @@ class ReservationService:
         reserved = self.reservation_repo.get_active_reserved_quantity(sku)
         return on_hand - reserved
 
-    def reserve_stock(self, order_id, sku, quantity, user, price):
+    def reserve_stock(self, order_id, sku, quantity, user=None, price=None):
         if order_id.strip() == "":
             print("Order ID cannot be empty")
             return
