@@ -206,7 +206,7 @@ def set_low_stock_threshold(current_threshold):
 def products_menu(menus, product_service,favourite_service, auth_service, low_stock_threshold):
 
     while True:
-        choice = menus.view_products_menu()
+        choice = menus.view_products_menu(auth_service.current_user)
 
         if choice == "1":
 
@@ -615,6 +615,22 @@ def suppliers_menu(menus, supplier_service, supplier_catalogue_service):
         else:
             print("Invalid choice.")
 
+def assign_role_menu(menus, auth_service):
+    while True:
+        choice = menus.view_assign_roles()
+
+        if auth_service.current_user is None:
+            print("You must be logged in.")
+            return
+
+        if auth_service.current_user.role != "ADMIN":
+            print("Access denied: ADMIN only.")
+            return
+
+        username = input("Enter username to update: ").strip()
+        new_role = input("Enter new role (STAFF/MANAGER/ADMIN): ").strip()
+
+        auth_service.assign_role(username, new_role)
 
 def main():
     menus = Menus()
@@ -633,10 +649,8 @@ def main():
     product_service = ProductService(product_repo, category_repo)
     stock_service = StockService(product_repo)
     favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
+    #stock_service = StockService(stock_repo)
     return_service = ReturnService(product_repo, stock_service, return_repo)
-    reservation_service =ReservationService(product_repo)
-    budget_repo = BudgetRepo("budgets.txt")
-    budget_service = BudgetService(budget_repo)
 
     purchase_order_service = PurchaseOrderService()
 
@@ -644,7 +658,7 @@ def main():
     low_stock_threshold = 5
 
     while True:
-        choice = menus.view_main_menu()
+        choice = menus.view_main_menu(auth_service.current_user)
 
         if choice == "1":
             low_stock_threshold = products_menu(
@@ -659,13 +673,17 @@ def main():
         elif choice == "3":
             purchase_orders_menu(menus, auth_service, purchase_order_service, budget_service)
         elif choice == "4":
-            auth_service.logout()
-            print("Logged out successfully.")
-            menus.auth_menu(auth_service)
+            result = menus.auth_menu(auth_service)
+            if result == "ASSIGN_ROLES":
+                assign_role_menu(menus, auth_service)
         elif choice == "5":
             summary_dashboard_menu(product_service, low_stock_threshold)
         elif choice == "6":
             returns_menu(return_service)
+        elif choice == "10":
+            auth_service.logout()
+            print("Logged out successfully.")
+            menus.auth_menu(auth_service)
         elif choice== "7":
             budget_menu(menus,budget_service,product_service)
         elif choice == "8":

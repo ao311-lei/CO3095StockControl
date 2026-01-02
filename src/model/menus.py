@@ -1,33 +1,37 @@
+
 class Menus:
-    def view_main_menu(self):
+    def view_main_menu(self, current_user):
         print("\n==============================")
         print("     [ STOCK CONTROL SYSTEM ]   ")
         print("==============================")
         print("1) Products")
-        print("2) Stock")
-        print("3) Purchase Orders")
         print("4) Account")
         print("5) Dashboard")
         print("6) Returns")
-        print("7) Budget")
-        print("8) Suppliers")
         print("9) Reservations")
-        print("0) Exit")
+        if current_user and current_user.is_manager():
+            print("2) Stock")
+            print("3) Purchase Orders")
+            print("7) Budget")
+            print("8) Suppliers")
+            print("0) Exit")
         return input("Choose an option: ").strip()
 
-    def view_products_menu(self):
+    def view_products_menu(self, current_user):
         print("\n----------[ PRODUCTS ]----------")
         print("1) View all products")
         print("2) Search products")
         print("3) Filter products")
-        print("4) Add Product")
-        print("5) Remove Product")
-        print("6) Update Product")
-        print("7) Low Stock Alerts")
         print("8) View favourite products")
-        print("9) Set Low Stock Threshold")
-        print("10) Deactivate and reactivate products")
         print("0) Back")
+        if current_user and current_user.is_manager():
+            print("4) Add Product")
+            print("5) Remove Product")
+            print("6) Update Product")
+            print("7) Low Stock Alerts")
+            print("9) Set Low Stock Threshold")
+        if current_user and current_user.is_admin():
+            print("10) Deactivate and reactivate products")
         return input("Choose an option: ").strip()
 
     def view_stock_menu(self):
@@ -48,35 +52,59 @@ class Menus:
     def auth_menu(self, auth_service):
         while True:
             print("\n-----------[ ACCOUNT ]----------")
-            print("1. Login")
-            print("2. Sign Up")
-            print("3. Exit")
 
-            choice = input("Choose option: ")
+            if auth_service.current_user is None:
+                print("1. Login")
+                print("2. Sign Up")
+                print("3. Exit")
 
-            if choice == "1":
-                username = input("Username: ").strip()
-                password = input("Password: ")
+                choice = input("Choose option: ")
 
-                if auth_service.login(username, password):
-                    print("Login successful")
+                if choice == "1":
+                    username = input("Username: ").strip()
+                    password = input("Password: ")
+
+                    if auth_service.login(username, password):
+                        print("Login successful")
+                        return
+                    else:
+                        print("Invalid username or password")
+
+                elif choice == "2":
+                    username = input("Choose username: ").strip()
+                    password = input("Choose password: ")
+
+                    try:
+                        auth_service.sign_up(username, password)
+                        print("Account created successfully")
+                    except ValueError as e:
+                        print("Error:", e)
+
+                elif choice == "3":
                     return
                 else:
-                    print("Invalid username or password")
+                    print("Invalid option")
+                continue
 
-            elif choice == "2":
-                username = input("Choose username: ").strip()
-                password = input("Choose password: ")
+            user = auth_service.current_user
+            print(f"Logged in as: {user.username} ({user.role})")
+            print("1) Logout")
 
-                try:
-                    auth_service.sign_up(username, password)
-                    print("Account created successfully")
-                except ValueError as e:
-                    print("Error:", e)
+        # Admin-only option
+            if user.role == "ADMIN":
+                print("2) Assign roles")
 
-            elif choice == "3":
-                print("bye")
+            print("0) Back")
+            choice = input("Choose option: ").strip()
 
+            if choice == "1":
+                auth_service.logout()
+                print("Logged out.")
+                return
+            elif choice == "2" and user.role == "ADMIN":
+                return "ASSIGN_ROLES"  # signal to main
+            elif choice == "0":
+                return
             else:
                 print("Invalid option")
 
@@ -113,6 +141,10 @@ class Menus:
         print("3) View supplier catalogue")
         print("0) Back")
         return input("Choose an option: ").strip()
+
+    def view_assign_roles(auth_service):
+        print("\n----------[ ASSIGN ROLE ]----------")
+        print("1) Update role")
 
 
 def category_menu(category_service):
@@ -159,8 +191,6 @@ def category_menu(category_service):
     except ValueError as e:
         # Catch and display validation errors
         print("Error:", e)
-
-
 
 
 def auth_menu(auth_service):
