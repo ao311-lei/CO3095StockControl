@@ -65,7 +65,10 @@ class ReservationService:
         )
 
         self.reservation_repo.save_reservation(reservation)
-        self.write_audit(f"Reservation {reservation_id} cancell by {user.username}")
+        self.write_audit(
+            f"Reservation {reservation_id} created by {user.username} "
+            f"order={order_id} sku={sku} qty={quantity}"
+        )
 
         print(f"Reservation successful. ID: {reservation_id}")
 
