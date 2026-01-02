@@ -1,5 +1,6 @@
 from Repo.purchase_order_repo import PurchaseOrderRepo
 from Repo.reservation_repo import ReservationRepo
+from Service import activity_service
 from model.menus import Menus
 from Repo.product_repo import ProductRepo
 from Service.product_service import ProductService
@@ -632,6 +633,19 @@ def assign_role_menu(menus, auth_service):
 
         auth_service.assign_role(username, new_role)
 
+def view_activity_menu(menus,auth_service, activity_service):
+    while True:
+        choice = menus.view_admin_activity()
+        if auth_service.current_user is None:
+            print("You must be logged in.")
+            return
+
+        if auth_service.current_user.role != "ADMIN":
+            print("Access denied: ADMIN only.")
+            return
+        print(activity_service.get_stats())
+
+
 def main():
     menus = Menus()
     user_repo = UserRepo("users.txt")
@@ -654,7 +668,7 @@ def main():
 
     purchase_order_service = PurchaseOrderService()
 
-    menus.auth_menu(auth_service)
+    menus.auth_menu(auth_service, activity_service)
     low_stock_threshold = 5
 
     while True:
@@ -667,15 +681,17 @@ def main():
         elif choice == "2":
             if auth_service.current_user is None:
                 print("Authorization failed. Please login first.")
-                menus.auth_menu(auth_service)
+                menus.auth_menu(auth_service, activity_service)
             else:
                 stock_menu(menus, auth_service, stock_service)
         elif choice == "3":
             purchase_orders_menu(menus, auth_service, purchase_order_service)
         elif choice == "4":
-            result = menus.auth_menu(auth_service)
+            result = menus.auth_menu(auth_service, activity_service)
             if result == "ASSIGN_ROLES":
                 assign_role_menu(menus, auth_service)
+            if result == "VIEW_ACTIVITIES":
+                view_activity_menu(menus, auth_service, activity_service)
         elif choice == "5":
             summary_dashboard_menu(product_service, low_stock_threshold)
         elif choice == "6":

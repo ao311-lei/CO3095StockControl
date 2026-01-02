@@ -1,11 +1,13 @@
 from Repo.product_repo import ProductRepo
 
+AUDIT_FILE = "audit_log.txt"
+
 
 class StockService:
     def __init__(self, product_repo: ProductRepo):
         self.product_repo = product_repo
 
-    def record_stock_increase(self, sku, amount):
+    def record_stock_increase(self, sku, amount,user=None):
         if amount <= 0:
             raise ValueError("Increase amount must be a positive integer")
 
@@ -36,4 +38,5 @@ class StockService:
 
         product.quantity -= amount
         self.product_repo.save_products()
+        write_audit(f"USER={user} ACTION=STOCK_DECREASE sku={sku} amount={amount} new_qty={product.quantity}")
         return product.quantity
