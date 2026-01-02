@@ -1,9 +1,10 @@
 class PurchaseOrder:
-    def __init__(self, po_id, expected_date, created_by, status):
+    def __init__(self, po_id, expected_date, created_by, status, supplier_id):
         self.po_id = po_id
         self.expected_date = expected_date
         self.created_by = created_by
         self.status = status
+        self.supplier_id = supplier_id
 
 class PurchaseOrderLine:
     def __init__(self, po_id, sku, quantity):
