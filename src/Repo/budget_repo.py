@@ -9,31 +9,39 @@ class BudgetRepo:
             open(self.filename, "w").close()
 
     def load_budget_record(self):
-
         try:
             with open(self.filename, "r") as file:
-                line = file.read().strip()
+                line = file.readline().strip()
+                if not line:
+                    return None, None, None
 
-                if line == "":
-                    return None, None  # month_key, amount
+                parts = line.split("|")
+                if len(parts) < 2:
+                    return None, None, None
 
-                parts = line.split(",", 1)
-                if len(parts) != 2:
-                    return None, None
+                month = parts[0].strip()
 
-                month_key = parts[0].strip()
-                amount = float(parts[1].strip())
+                # budget
+                budget_str = parts[1].strip()
+                budget = None
+                if budget_str != "":
+                    budget = float(budget_str)
 
-                if amount == "":
-                    return month_key, None
+                # spent (optional)
+                spent = 0.0
+                if len(parts) >= 3 and parts[2].strip() != "":
+                    spent = float(parts[2].strip())
 
-                return month_key, float(amount)
-        except:
-            return None, None
+                return month, budget, spent
+        except FileNotFoundError:
+            return None, None, None
 
-    def save_budget_record(self, month_key, amount):
+    def save_budget_record(self, month_key, budget_amount, spent_amount=0.0):
+        budget_text = "" if budget_amount is None else str(budget_amount)
+        spent_text = str(spent_amount)
+
         with open(self.filename, "w") as file:
-            file.write(f"{month_key},{amount}")
+            file.write(f"{month_key}|{budget_text}|{spent_text}\n")
 
     def current_month_key(self):
         today = date.today()
