@@ -19,6 +19,7 @@ from Repo.supplier_repo import SupplierRepo
 from Service.supplier_service import SupplierService
 from Repo.supplier_product_repo import SupplierProductRepo
 from Service.supplier_catalogue_service import SupplierCatalogueService
+from Service.dashboard_chart_service import DashboardChartService
 from Service.activity_service import ActivityService
 
 from Repo.reservation_repo import ReservationRepo
@@ -460,7 +461,7 @@ def summary_dashboard_menu(product_service, low_stock_threshold):
     print("Low stock %:", str(summary["low_stock_percent"]) + "%")
     print("Out of stock %:", str(summary["out_of_stock_percent"]) + "%")
     print("==============================\n")
-    input("Press Enter to go back...")
+
 
 def returns_menu(return_service):
     print("\n----------[ RETURNS ]----------")
@@ -617,6 +618,22 @@ def suppliers_menu(menus, supplier_service, supplier_catalogue_service):
         else:
             print("Invalid choice.")
 
+def dashboard_charts_menu(dashboard_chart_service, low_stock_threshold):
+    lines = dashboard_chart_service.build_dashboard_chart_lines(low_stock_threshold)
+
+    for line in lines:
+        print(line)
+
+
+def dashboard_menu( product_service,dashboard_chart_service,low_stock_threshold):
+    # Show summary first
+    summary_dashboard_menu(product_service, low_stock_threshold)
+    # Then show charts
+    dashboard_charts_menu(dashboard_chart_service, low_stock_threshold)
+    # one pause at the end
+    input("\nPress Enter to go back...")
+
+
 def assign_role_menu(menus, auth_service):
     while True:
         choice = menus.view_assign_roles()
@@ -718,20 +735,17 @@ def view_activity_menu(menus,auth_service, activity_service):
 def main():
     menus = Menus()
     user_repo = UserRepo("src/data/users.txt")
-    stock_repo = StockRepo("stocks.txt")
+    stock_repo = StockRepo("src/data/stocks.txt")
     product_repo = ProductRepo("src/data/products.txt")
     favourite_repo = FavouriteRepo("src/data/favourites.txt")
     return_repo = ReturnRepo("src/data/returns.txt")
     supplier_repo = SupplierRepo("src/data/suppliers.txt")
     supplier_product_repo = SupplierProductRepo("src/data/supplier_products.txt")
+    activity_service = ActivityService("src/data/audit_log.txt")
+
     reservation_service = ReservationService(product_repo)
 
-    product_repo = ProductRepo("products.txt")
-    favourite_repo = FavouriteRepo("favourites.txt")
-    return_repo = ReturnRepo("returns.txt")
-    supplier_repo = SupplierRepo("suppliers.txt")
-    activity_service = ActivityService("src/data/audit_log.txt")
-    supplier_product_repo = SupplierProductRepo("supplier_products.txt")
+
 
     supplier_catalogue_service = SupplierCatalogueService(supplier_repo, product_repo, supplier_product_repo)
     supplier_service = SupplierService(supplier_repo)
@@ -742,6 +756,7 @@ def main():
     favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
     #stock_service = StockService(stock_repo)
     return_service = ReturnService(product_repo, stock_service, return_repo)
+    dashboard_chart_service = DashboardChartService(product_repo)
     budget_repo = BudgetRepo("src/data/budgets.txt")
     budget_service = BudgetService(budget_repo)
 
@@ -773,7 +788,7 @@ def main():
             if result == "VIEW_ACTIVITIES":
                 view_activity_menu(menus, auth_service, activity_service)
         elif choice == "5":
-            summary_dashboard_menu(product_service, low_stock_threshold)
+            dashboard_menu(product_service,dashboard_chart_service,low_stock_threshold)
         elif choice == "6":
             returns_menu(return_service)
         elif choice == "10":
