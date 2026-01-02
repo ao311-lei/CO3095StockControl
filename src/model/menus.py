@@ -12,6 +12,8 @@ class Menus:
         print("5) Dashboard")
         print("6) Returns")
         if current_user and current_user.is_manager():
+            print("2) Stock")
+            print("3) Purchase Orders")
             print("7) Budget")
             print("8) Suppliers")
             print("9) Reservations")
@@ -50,7 +52,7 @@ class Menus:
         print("0) Back")
         return input("Choose an option: ").strip()
 
-    def auth_menu(self, auth_service):
+    def auth_menu(self, auth_service,activity_service):
         while True:
             print("\n-----------[ ACCOUNT ]----------")
 
@@ -94,6 +96,7 @@ class Menus:
         # Admin-only option
             if user.role == "ADMIN":
                 print("2) Assign roles")
+                print("3) View activity stats")
 
             print("0) Back")
             choice = input("Choose option: ").strip()
@@ -103,13 +106,15 @@ class Menus:
                 print("Logged out.")
                 return
             elif choice == "2" and user.role == "ADMIN":
-                return "ASSIGN_ROLES"  # signal to main
+                return "ASSIGN_ROLES"
+            elif choice == "3" and user.role == "ADMIN":
+                return "VIEW_ACTIVITIES"
             elif choice == "0":
                 return
             else:
                 print("Invalid option")
 
-    def view_purchase_orders_menu(purchase_orders_service):
+    def view_purchase_orders_menu(self):
         print("\n----------[ PURCHASE ORDERS ]----------")
         print("1) Create purchase order")
         print("2) View purchase orders")
@@ -127,7 +132,7 @@ class Menus:
         print("0) Back")
         return input("Choose an option: ").strip()
 
-    def view_reservations_menu(reservation_service):
+    def view_reservations_menu(self):
         print("\n----------[ RESERVATIONS ]----------")
         print("1) Create reservation")
         print("2) View reservations")
@@ -143,9 +148,16 @@ class Menus:
         print("0) Back")
         return input("Choose an option: ").strip()
 
-    def view_assign_roles(auth_service):
+    def view_assign_roles(self):
         print("\n----------[ ASSIGN ROLE ]----------")
         print("1) Update role")
+
+    def view_admin_activity(auth_service):
+        print("\n----------[ ACTIVITY ]----------")
+        print("1) View activity stats: 24hrs")
+        print("2) View activity stats: 7 days")
+        print("0) Back")
+        return input("Choose an option: ").strip()
 
 
 def category_menu(category_service):

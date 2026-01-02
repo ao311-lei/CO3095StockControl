@@ -3,7 +3,7 @@ SKU002,Bread,White bread loaf,16,0.9,Bakery,ACTIVE
 SKU003,Cheese,Cheddar cheese block 400g,17,3.5,Dairy,INACTIVE
 SKU004,Butter,Unsalted butter 250g,8,2.1,Dairy,INACTIVE
 SKU005,Apples,Fresh red apples pack,30,2.0,Fruit,ACTIVE
-SKU006,Bananas,Ripe bananas bunch,20,1.5,Fruit,ACTIVE
+SKU006,Bananas,Ripe bananas bunch,25,1.5,Fruit,ACTIVE
 SKU007,Chicken Breast,Fresh chicken breast fillets,12,5.8,Meat,ACTIVE
 SKU008,Beef Mince,Lean beef mince 500g,9,4.75,Meat,ACTIVE
 SKU009,Orange Juice,Fresh orange juice 1L,18,2.3,Drinks,ACTIVE

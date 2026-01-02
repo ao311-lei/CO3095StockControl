@@ -1,5 +1,8 @@
 import hashlib
 from model.user import User
+from datetime import datetime
+
+AUDIT_FILE = "audit_log.txt"
 
 class AuthService:
     def __init__(self, user_repo):
@@ -33,14 +36,16 @@ class AuthService:
     def login(self, username, password):
         user = self.user_repo.get_user(username)
         if user is None:
-            return None
+            self.write_audit(f"USER={username} ACTION=LOGIN FAIL reason=user_not_found")
+            return False
 
         password = self._hash_password(password)
-
         if password != user.password:
+            self.write_audit(f"USER={username} ACTION=LOGIN FAIL reason=bad_password")
             return False
 
         self.current_user = user
+        self.write_audit(f"USER={username} ACTION=LOGIN SUCCESS")
         return True
 
     def assign_role(self, target_username, new_role):
@@ -67,8 +72,15 @@ class AuthService:
             return False
 
         print("You have successfully changed role")
+        self.write_audit(f"USER={self.current_user.username} ACTION=ASSIGN_ROLE target={target_username} role={new_role}")
+
         return True
 
     def logout(self):
         self.current_user = None
         return True
+
+    def write_audit(self, message):
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open(AUDIT_FILE, "a") as f:
+            f.write(f"{timestamp} - {message}\n")
