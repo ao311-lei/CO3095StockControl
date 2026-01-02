@@ -1,6 +1,6 @@
 from model.reservation import Reservation
 
-RESERVATION_FILE = 'reservations.txt'
+RESERVATION_FILE = 'src/data/reservations.txt'
 
 
 class ReservationRepo:

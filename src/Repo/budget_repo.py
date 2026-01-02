@@ -1,7 +1,7 @@
 from datetime import date
 
 class BudgetRepo:
-    def __init__(self, filename="budgets.txt"):
+    def __init__(self, filename="src/data/budgets.txt"):
         self.filename = filename
         try:
             open(self.filename, "r").close()

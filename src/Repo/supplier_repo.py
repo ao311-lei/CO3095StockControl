@@ -1,7 +1,7 @@
 from model.supplier import Supplier
 
 class SupplierRepo:
-    def __init__(self, filename="suppliers.txt"):
+    def __init__(self, filename="src/data/suppliers.txt"):
         self.filename = filename
         self.suppliers = []
         self.load_suppliers()

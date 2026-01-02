@@ -5,7 +5,7 @@ from model.reservation import Reservation
 from Repo.reservation_repo import ReservationRepo
 
 
-AUDIT_FILE = "audit_log.txt"
+AUDIT_FILE = "src/data/audit_log.txt"
 
 
 class ReservationService:

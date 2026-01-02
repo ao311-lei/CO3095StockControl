@@ -1,6 +1,6 @@
 class FavouriteRepo:
 
-    def __init__(self, filename="favourites.txt"):
+    def __init__(self, filename="src/data/favourites.txt"):
         self.filename = filename
         try:
             open(self.filename, "r").close()

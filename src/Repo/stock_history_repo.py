@@ -3,7 +3,7 @@ from model.stock_history_entry import StockHistoryEntry
 
 
 class StockHistoryRepo:
-    def __init__(self, filename="stock_history.txt"):
+    def __init__(self, filename="src/data/stock_history.txt"):
         project_root = Path(__file__).resolve().parents[2]
         self.filepath = projectroot / filename
         self.entries = []

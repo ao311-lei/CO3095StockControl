@@ -2,7 +2,7 @@ from model.product import Product
 
 
 class ProductRepo:
-    def __init__(self, filename="products.txt"):
+    def __init__(self, filename="src/data/products.txt"):
         self.filename = filename
         self.products = []
         self.load_products()

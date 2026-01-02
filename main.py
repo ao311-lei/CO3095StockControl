@@ -653,6 +653,8 @@ def main():
     favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
     #stock_service = StockService(stock_repo)
     return_service = ReturnService(product_repo, stock_service, return_repo)
+    budget_repo = BudgetRepo("src/data/budgets.txt")
+    budget_service = BudgetService(budget_repo)
 
 
     purchase_order_service = PurchaseOrderService()

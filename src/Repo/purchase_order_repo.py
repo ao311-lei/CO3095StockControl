@@ -1,6 +1,6 @@
 from model.purchase_order import PurchaseOrder, PurchaseOrderLine
 
-PO_FILE = "purchase_orders.txt"
+PO_FILE = "src/data/purchase_orders.txt"
 
 class PurchaseOrderRepo:
 

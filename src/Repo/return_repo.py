@@ -1,7 +1,7 @@
 from model.return_item import ReturnItem
 
 class ReturnRepo:
-    def __init__(self, filename="returns.txt"):
+    def __init__(self, filename="src/data/returns.txt"):
         self.filename = filename
         try:
             open(self.filename, "r").close()

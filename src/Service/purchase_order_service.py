@@ -4,12 +4,12 @@ from model.purchase_order import PurchaseOrder, PurchaseOrderLine, POStatus
 from Repo.purchase_order_repo import PurchaseOrderRepo
 from Repo.product_repo import ProductRepo
 
-AUDIT_FILE = "audit_log.txt"
+AUDIT_FILE = "src/data/audit_log.txt"
 
 class PurchaseOrderService:
     def __init__(self):
         self.repo = PurchaseOrderRepo()
-        self.product_repo = ProductRepo("products.txt")
+        self.product_repo = ProductRepo("src/data/products.txt")
 
     def validate_date(self, date_string):
         try:
