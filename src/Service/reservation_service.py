@@ -65,7 +65,7 @@ class ReservationService:
         )
 
         self.reservation_repo.save_reservation(reservation)
-        self.write_audit(f"Reservation {reservation_id} cancelled by {user.username}")
+        self.write_audit(f"Reservation {reservation_id} cancell by {user.username}")
 
         print(f"Reservation successful. ID: {reservation_id}")
 
