@@ -27,7 +27,7 @@ class ReservationService:
         reserved = self.reservation_repo.get_active_reserved_quantity(sku)
         return on_hand - reserved
 
-    def reserve_stock(self, order_id, sku, quantity, user, price):
+    def reserve_stock(self, order_id, sku, quantity, user=None, price=None):
         if order_id.strip() == "":
             print("Order ID cannot be empty")
             return
@@ -65,10 +65,7 @@ class ReservationService:
         )
 
         self.reservation_repo.save_reservation(reservation)
-        self.write_audit(
-            f"Reservation {reservation_id} created by {user.username} "
-            f"order={order_id} sku={sku} qty={quantity}"
-        )
+        self.write_audit(f"USER={user} ACTION=RESERVATION sku={sku} order={order_id} qty={quantity}")
 
         print(f"Reservation successful. ID: {reservation_id}")
 
