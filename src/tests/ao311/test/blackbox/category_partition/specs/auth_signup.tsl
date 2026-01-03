@@ -1,0 +1,18 @@
+# Category Partition for AuthService.sign_up(username, password, role)
+
+Username:
+  Empty. [error]
+  WhitespaceOnly. [error]
+  ValidNew.
+  ValidExisting. [error]
+
+Password:
+  TooShort. [error]
+  MinLength8.
+  LongEnough.
+
+Role:
+  StaffDefault.
+  Admin.
+  Manager.
+  InvalidRole.

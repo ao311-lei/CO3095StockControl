@@ -1,0 +1,9 @@
+#Category Partition for User.__init__(..., role)
+Role:
+  Admin.
+  Manager.
+  Staff_Default.
+  OtherValid.
+  MixedCaseAdmin.
+  EmptyString.
+  NoneRole. [error]

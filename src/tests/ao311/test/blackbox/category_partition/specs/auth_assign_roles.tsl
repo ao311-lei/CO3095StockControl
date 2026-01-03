@@ -1,0 +1,17 @@
+# Category Partition for AuthService.assign_role(target_username, new_role)
+
+LoggedIn:
+  No.
+  YesAdmin.
+  YesNotAdmin.
+
+NewRole:
+  Admin.
+  Manager.
+  Staff.
+  Invalid.
+
+TargetUser:
+  Self.
+  OtherExists.
+  OtherMissing.

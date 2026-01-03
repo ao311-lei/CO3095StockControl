@@ -1,0 +1,11 @@
+# Category Partition for UserRepo.update_role(username, new_role)
+
+UserExists:
+  Yes.
+  No.
+
+NewRole:
+  Admin.
+  Manager.
+  Staff.
+  Invalid. [error]
