@@ -33,3 +33,32 @@ class StockHistoryService:
             raise ValueError("Invalid SKU")
 
         return self.history_repo.get_by_sku(sku)
+
+    def view_history(self, sku=None, limit=None):
+        entries = self.get_history(sku)
+        entries = sorted(entries, key=lambda e: e.timestamp, reverse=True)
+
+        if limit is not None:
+            limit = int(limit)
+            if limit < 1:
+                raise ValueError("Invalid limit")
+            entries = entries[:limit]
+
+        return [
+            {
+                "sku": e.sku,
+                "delta": e.delta,
+                "new_quantity": e.new_quantity,
+                "action": e.action,
+                "timestamp": e.timestamp
+            }
+            for e in entries
+        ]
+
+    def view_history_lines(self, sku=None, limit=None):
+        rows = self.view_history(sku=sku, limit=limit)
+        return [
+            f"{r['timestamp']} | {r['sku']} | {r['action']} | {r['delta']} | new={r['new_quantity']}"
+            for r in rows
+        ]
+
