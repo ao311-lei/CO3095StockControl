@@ -83,10 +83,20 @@ def stock_menu(menus, auth_service, stock_service, confirm_service):
 
             try:
                 amount = int(amount_str)
+
+                new_qty_after = product.quantity - amount
+
+                if amount >= 10 or new_qty_after <= 0:
+                    confirm_service.require_confirm(
+                        f"HIGH RISK: Decrease {sku} by {amount} (new qty: {new_qty_after}). Confirm"
+                    )
+
                 new_qty = stock_service.record_stock_decrease(sku, amount)
                 print(f"Stock updated. New quantity for {sku}: {new_qty}")
-            except ValueError as e:
+
+            except (ValueError, PermissionError) as e:
                 print(f"Error: {e}")
+
 
 
         elif choice == "0":
