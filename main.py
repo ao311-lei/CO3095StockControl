@@ -21,6 +21,7 @@ from Repo.supplier_product_repo import SupplierProductRepo
 from Service.supplier_catalogue_service import SupplierCatalogueService
 from Service.dashboard_chart_service import DashboardChartService
 from Service.activity_service import ActivityService
+from Service.confirm_service import ConfirmService
 
 from Repo.reservation_repo import ReservationRepo
 from Service.reservation_service import ReservationService
@@ -45,7 +46,7 @@ def show_products_and_favourite(products, favourite_service):
         print(favourite_service.favourite_product(sku))
 
 
-def stock_menu(menus, auth_service, stock_service):
+def stock_menu(menus, auth_service, stock_service, confirm_service):
     while True:
         choice = menus.view_stock_menu()
 
@@ -112,14 +113,20 @@ def add_product_menu(product_service):
         print(result)
 
 
-def remove_product_menu(product_service):
+def remove_product_menu(product_service, confirm_service):
     while True:
         sku = input("Enter SKU to remove a product (or press Enter to go back): ").strip()
         # Press Enter = return to Products menu
         if sku == "":
             break
-        result = product_service.remove_product(sku)
-        print(result)
+
+        try:
+            confirm_service.require_confirm(f"Confirm the deletion of {sku}")
+            result = product_service.remove_product(sku)
+            print(result)
+        except PermissionError as e:
+            print(e)
+
 
 def update_product_menu(product_service):
     while True:
@@ -206,7 +213,7 @@ def set_low_stock_threshold(current_threshold):
         return current_threshold
 
 
-def products_menu(menus, product_service,favourite_service, auth_service, low_stock_threshold):
+def products_menu(menus, product_service,favourite_service, auth_service, low_stock_threshold, confirm_service):
 
     while True:
         choice = menus.view_products_menu(auth_service.current_user)
@@ -755,6 +762,7 @@ def main():
     stock_service = StockService(product_repo)
     favourite_service = FavouriteService(favourite_repo, product_repo, auth_service)
     #stock_service = StockService(stock_repo)
+    confirm_service = ConfirmService()
     return_service = ReturnService(product_repo, stock_service, return_repo)
     dashboard_chart_service = DashboardChartService(product_repo)
     budget_repo = BudgetRepo("src/data/budgets.txt")
@@ -771,14 +779,14 @@ def main():
 
         if choice == "1":
             low_stock_threshold = products_menu(
-                menus, product_service, favourite_service, auth_service, low_stock_threshold
+                menus, product_service, favourite_service, auth_service, low_stock_threshold, confirm_service
             )
         elif choice == "2":
             if auth_service.current_user is None:
                 print("Authorization failed. Please login first.")
                 menus.auth_menu(auth_service, activity_service)
             else:
-                stock_menu(menus, auth_service, stock_service)
+                stock_menu(menus, auth_service, stock_service, confirm_service)
         elif choice == "3":
             purchase_orders_menu(menus, auth_service, purchase_order_service, budget_service)
         elif choice == "4":
