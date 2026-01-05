@@ -6,7 +6,7 @@ class RestockCalendarService:
         self.product_repo = product_repo
         self.restock_rules = {}
 
-    def set_restock_rule(self, sku, reorderlevel, lead_time_days):
+    def set_restock_rule(self, sku, reorder_level, lead_time_days):
         if sku is None or str(sku).strip() == "":
             raise ValueError("Invalid SKU")
 

@@ -9,7 +9,8 @@ class SessionService:
         self.last_activity = None
 
     def start_session(self):
-        self.last_activity = datetime.now(timezone.uct)
+        self.active = True
+        self.last_activity = datetime.now(timezone.utc)
 
     def end_session(self):
         self.active = False
