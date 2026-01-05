@@ -60,7 +60,7 @@ class PurchaseOrderRepo:
                     parts= line.strip().split("|")
                     if len(parts) == 5 and parts[4] == "HEADER":
                         orders.append(PurchaseOrder(
-                            parts[0], parts[1], parts[2], parts[3]
+                            parts[0], parts[1], parts[2], parts[3], parts[4]
                         ))
         except FileNotFoundError:
             pass
