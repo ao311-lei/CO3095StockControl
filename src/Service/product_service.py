@@ -40,7 +40,7 @@ class ProductService:
         if existing != None:
             return "That SKU already exists"
 
-        new_product = Product(sku, name, description, quantity, price, category, active=True,user=None)
+        new_product = Product(sku, name, description, quantity, price, category, active=True)
         self.product_repo.add_product(new_product)
         self.write_audit(f"USER={user} ACTION=PRODUCT_ADD sku={sku} qty={quantity} price={price}")
 
