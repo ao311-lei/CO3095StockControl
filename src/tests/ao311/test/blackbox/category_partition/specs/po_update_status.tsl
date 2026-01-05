@@ -1,0 +1,14 @@
+# Category Partition for PurchaseOrderService.update_po_status(po_id, status, user)
+
+StatusInput:
+  ValidLowercase.
+  ValidUppercase.
+  InvalidStatus.
+
+POExists:
+  Yes.
+  No. [error]
+
+Transition:
+  Valid.
+  Invalid.

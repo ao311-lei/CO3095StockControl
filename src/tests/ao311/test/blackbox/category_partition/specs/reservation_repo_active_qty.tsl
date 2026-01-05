@@ -1,0 +1,11 @@
+# Category Partition for ReservationRepo.cancel_reservation(reservation_id)
+
+FileState:
+  Missing. [error]
+  Present.
+
+ReservationState:
+  ActiveExists.
+  CancelledExists.
+  NotFound.
+  MalformedLines.

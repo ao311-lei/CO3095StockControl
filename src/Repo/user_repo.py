@@ -2,7 +2,6 @@ from model.user import User
 class UserRepo:
     def __init__(self, filename):
         self.filename = filename
-
         try:
             open(self.filename, "r").close()
         except FileNotFoundError:

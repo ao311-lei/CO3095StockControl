@@ -1,0 +1,14 @@
+# Category Partition for ActivityService.get_stats(hours)
+
+FileState:
+  Missing.
+  Present.
+
+LineContent:
+  EmptyFile.
+  OlderThanCutoffOnly.
+  ValidRecentUserAction.
+  RecentMissingUser.
+  RecentMissingAction.
+  RecentLoginFail.
+  MixedUsersActions.

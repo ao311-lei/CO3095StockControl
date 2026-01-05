@@ -1,0 +1,7 @@
+# Category Partition for ActivityService._parse_line(line)
+
+LineFormat:
+  Valid.
+  MissingDelimiter. [error]
+  InvalidTimestamp. [error]
+  EmptyString. [error]

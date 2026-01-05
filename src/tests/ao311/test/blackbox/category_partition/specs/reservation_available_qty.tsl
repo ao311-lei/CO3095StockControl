@@ -1,0 +1,10 @@
+# Category Partition for ReservationService.get_available_quantity(sku)
+
+SKU:
+  Exists.
+  Missing. [error]
+
+Reserved:
+  None.
+  SomeActive.
+  SomeCancelledOnly.
