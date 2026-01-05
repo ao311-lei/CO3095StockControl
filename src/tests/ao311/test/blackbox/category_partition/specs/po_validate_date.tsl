@@ -1,0 +1,9 @@
+# Category Partition for PurchaseOrderService.validate_date(date_string)
+
+DateString:
+  ValidFuture.
+  Today.
+  PastDate.
+  InvalidFormat.
+  NonNumeric.
+  EmptyString. [error]

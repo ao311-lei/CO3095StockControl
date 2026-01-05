@@ -1,0 +1,4 @@
+#Category Partition for User.is_admin() based on stored role state
+RoleState:
+  AdminRole.
+  NonAdminRole.

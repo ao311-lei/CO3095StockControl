@@ -1,0 +1,19 @@
+# Category Partition for ReservationService.reserve_stock(order_id, sku, quantity, user, price)
+
+OrderID:
+  Empty. [error]
+  Valid.
+
+SKU:
+  Empty. [error]
+  ValidExisting.
+  ValidMissing. [error]
+
+Quantity:
+  NonInt. [error]
+  ZeroOrNegative. [error]
+  PositiveWithinAvailable.
+  PositiveExceedsAvailable. [error]
+
+User:
+  Present.

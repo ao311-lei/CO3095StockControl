@@ -1,0 +1,9 @@
+# Category Partition for AuthService.login(username, password)
+
+UserExists:
+  Yes.
+  No.
+
+PasswordCorrect:
+  Yes.
+  No.

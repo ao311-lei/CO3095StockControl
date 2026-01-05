@@ -1,0 +1,6 @@
+# Category Partition for CategoryRepo.category_exists(name)
+
+NameInput:
+  Exists.
+  DoesNotExist.
+  CaseInsensitiveMatch.

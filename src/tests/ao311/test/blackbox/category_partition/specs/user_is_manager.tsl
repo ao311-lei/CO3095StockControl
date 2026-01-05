@@ -1,0 +1,5 @@
+# Category Partition for User.is_manager() based on stored role state
+RoleState:
+  AdminRole.
+  ManagerRole.
+  OtherRole.

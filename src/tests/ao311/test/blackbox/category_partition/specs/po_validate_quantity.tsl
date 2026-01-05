@@ -1,0 +1,7 @@
+# Category Partition for PurchaseOrderService.validate_quantity(quantity)
+
+Quantity:
+  PositiveInt.
+  Zero. [error]
+  NegativeInt. [error]
+  NonIntType. [error]

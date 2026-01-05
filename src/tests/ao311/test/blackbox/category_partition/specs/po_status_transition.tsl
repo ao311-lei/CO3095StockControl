@@ -1,0 +1,15 @@
+# Category Partition for PurchaseOrderService.is_valid_transition(current, new)
+
+Current:
+  Created.
+  Approved.
+  Partial.
+  Completed.
+  Cancelled.
+
+New:
+  Approved.
+  Partial.
+  Completed.
+  Cancelled.
+  Created.
