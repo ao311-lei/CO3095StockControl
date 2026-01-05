@@ -1,6 +1,10 @@
 class ConfirmService:
     def __init__(self, confirmer=None):
-        self.confirmer = confirmer or self._default_confirmer
+        if confirmer is None:
+            raise ValueError("Confirmer required")
+        self.confirmer = confirmer
+
+
 
     def _default_confirmer(self, message):
         answer = input(f"{message} (yes/no): ").strip().lower()
@@ -9,3 +13,5 @@ class ConfirmService:
     def require_confirm(self, message):
         if not self.confirmer(message):
             raise PermissionError("Cancelled")
+        return True
+

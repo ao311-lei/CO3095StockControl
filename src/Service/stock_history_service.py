@@ -20,7 +20,7 @@ class StockHistoryService:
         if new_quantity < 0:
             raise ValueError("Invalid quantity")
 
-        timestamp = datetime.now(timezone.utc).isoformat()
+        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         entry = StockHistoryEntry(str(sku).strip(), delta, new_quantity, str(action).strip(), timestamp)
         return self.history_repo.add_entry(entry)
 

@@ -6,6 +6,7 @@ class RestockCalendarService:
         self.product_repo = product_repo
         self.restock_rules = {}
 
+
     def set_restock_rule(self, sku, reorder_level, lead_time_days):
         if sku is None or str(sku).strip() == "":
             raise ValueError("Invalid SKU")
@@ -13,8 +14,9 @@ class RestockCalendarService:
         reorder_level = int(reorder_level)
         lead_time_days = int(lead_time_days)
 
-        if reorder_level < 0 or lead_time_days < 0:
+        if reorder_level <= 0 or lead_time_days <= 0:
             raise ValueError("Invalid restock rule")
+
 
         product = self.product_repo.find_by_sku(sku)
         if product is None:
@@ -27,6 +29,10 @@ class RestockCalendarService:
 
         return self.restock_rules[sku]
 
+    def get_restock_rule(self, sku):
+        return self.restock_rules.get(sku)
+
+
     def get_restock_calendar(self):
         today = date.today()
         calendar = []
@@ -36,9 +42,9 @@ class RestockCalendarService:
             if rule is None:
                 continue
 
-            if product.quantity >= rule["reorder_level"]:
+            if product.quantity < rule["reorder_level"]:
                 due_date = today + timedelta(days=rule["lead_time_days"])
-                calendar.apend({
+                calendar.append({
                     "sku": product.sku,
                     "quantity": product.quantity,
                     "reorder_level": rule["reorder_level"],
