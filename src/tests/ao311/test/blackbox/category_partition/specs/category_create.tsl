@@ -1,0 +1,6 @@
+# Category Partition for CategoryService.create_category
+
+Name:
+  Empty. [error]
+  NewValid.
+  Duplicate. [error]

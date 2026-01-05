@@ -1,0 +1,5 @@
+# Category Partition for CategoryService.deactivate_category
+
+CategoryID:
+  Exists.
+  DoesNotExist. [error]

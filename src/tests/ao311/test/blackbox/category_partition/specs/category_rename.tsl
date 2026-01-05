@@ -1,0 +1,10 @@
+# Category Partition for CategoryService.rename_category
+
+CategoryID:
+  Exists.
+  DoesNotExist. [error]
+
+NewName:
+  Empty. [error]
+  UniqueValid.
+  Duplicate. [error]
