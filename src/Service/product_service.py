@@ -392,6 +392,9 @@ class ProductService:
             "errors": []
         }
 
+        if csv_path is None or csv_path.strip() == "":
+                summary["errors"].append("CSV path cannot be empty.")
+                return summary
 
         mode = (mode or "skip").strip().lower()
         if mode not in ["skip", "upsert"]:
@@ -486,7 +489,7 @@ class ProductService:
             return summary
 
         except FileNotFoundError:
-            summary["errors"].apend("CSV file not found.")
+            summary["errors"].append("CSV file not found.")
             return summary
         except Exception as e:
             summary["errors"].append(f"Failed to read CSV: {str(e)}")
