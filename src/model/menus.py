@@ -31,6 +31,7 @@ class Menus:
             print("6) Update Product")
             print("7) Low Stock Alerts")
             print("9) Set Low Stock Threshold")
+            print("11) Bulk Import Products (CSV)")
         if current_user and current_user.is_admin():
             print("10) Deactivate and reactivate products")
         return input("Choose an option: ").strip()

@@ -344,7 +344,33 @@ def products_menu(menus, product_service,favourite_service, auth_service, low_st
             else:
                 print("Invalid option.")
 
+        elif choice == "11":
+            if auth_service.current_user is None or not auth_service.current_user.is_manager():
+                print("Permission denied.")
+                continue
 
+            print("\nCSV format expected (with header):")
+            print("sku,name,description,quantity,price,category,active")
+            print("Example active values: ACTIVE / INACTIVE")
+
+            csv_path = input("Enter CSV file path: ").strip()
+            mode = input("Mode [Skip or Upsert] (default skip): ").strip().lower()
+            if mode == "":
+                mode = "skip"
+
+            summary = product_service.bulk_import_products(csv_path, mode=mode, user=auth_service.current_user.username)
+
+            print("\n--- Import Summary ---")
+            print(f"Rows read: {summary['rows_read']}")
+            print(f"Added: {summary['added']}")
+            print(f"Updated: {summary['updated']}")
+            print(f"Skipped: {summary['skipped']}")
+            print(f"Errors: {len(summary['errors'])}")
+
+            if summary["errors"]:
+                print("\n--- Errors (first 10) ---")
+                for e in summary["errors"][:10]:
+                    print(e)
 
 
         elif choice == "0":

@@ -2,6 +2,7 @@ from Repo.product_repo import ProductRepo
 from Repo.category_repo import CategoryRepo
 from model.product import Product
 from datetime import datetime
+import csv
 
 AUDIT_FILE = "src/data/audit_log.txt"
 
@@ -371,3 +372,122 @@ class ProductService:
 
 
 
+    def bulk_import_products(self, csv_path, mode="skip", user=None):
+        """
+        Bulk import products from a CSV file.
+
+        The expected header is:
+        sku,name,description,quantity,price,category,active
+
+        modes:
+          - skip: if SKU exists, skip it
+          - upsert: if SKU exists, overwrite it. Or else add it
+        """
+
+        summary = {
+            "rows_read": 0,
+            "added": 0,
+            "updated": 0,
+            "skipped": 0,
+            "errors": []
+        }
+
+
+        mode = (mode or "skip").strip().lower()
+        if mode not in ["skip", "upsert"]:
+            summary["errors"].append("Invalid mode. Use 'skip' or 'upsert'.")
+            return summary
+
+        try:
+            with open(csv_path, "r", newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+
+                required = ["sku", "name", "description", "quantity", "price"]
+                for r in required:
+                    if r not in reader.fieldnames:
+                        summary["errors"].append(f"Missing required column: {r}")
+                        return summary
+
+                for idx, row in enumerate(reader, start=2):
+                    summary["rows_read"] += 1
+
+                    try:
+                        sku = (row.get("sku") or "").strip()
+                        name = (row.get("name") or "").strip()
+                        description = (row.get("description") or "").strip()
+                        quantity_raw = (row.get("quantity") or "").strip()
+                        price_raw = (row.get("price") or "").strip()
+                        category = (row.get("category") or "").strip()
+                        active_raw = (row.get("active") or "").strip().upper()
+
+                        if category == "":
+                            category = None
+
+                        if sku == "" or name == "":
+                            raise ValueError("SKU and name are required.")
+
+                        try:
+                            quantity = int(quantity_raw)
+                        except:
+                            raise ValueError("Quantity must be a whole number.")
+
+                        if quantity < 0:
+                            raise ValueError("Quantity cannot be negative.")
+
+                        try:
+                            price = float(price_raw)
+                        except:
+                            raise ValueError("Price must be a number.")
+
+                        if price < 0:
+                            raise ValueError("Price cannot be negative.")
+
+                        existing = self.product_repo.find_by_sku(sku)
+
+                        # Determine active state (optional column)
+                        active = True
+                        if active_raw == "INACTIVE":
+                            active = False
+                        elif active_raw in ["", "ACTIVE"]:
+                            active = True
+                        else:
+                            if row.get("active") is not None and row.get("active") != "":
+                                raise ValueError("Active must be ACTIVE or INACTIVE.")
+
+                        if existing is None:
+                            # Add
+                            new_product = Product(sku, name, description, quantity, price, category, active=active)
+                            self.product_repo.add_product(new_product)
+                            summary["added"] += 1
+                        else:
+                            # Exists
+                            if mode == "skip":
+                                summary["skipped"] += 1
+                            else:
+                                # upsert -> overwrite ting
+                                existing.name = name
+                                existing.description = description
+                                existing.quantity = quantity
+                                existing.price = price
+                                existing.category = category
+                                existing.active = active
+                                self.product_repo.save_product(existing)
+                                summary["updated"] += 1
+
+                    except Exception as e:
+                        summary["errors"].apend(f"Row {idx}: {str(e)}")
+
+            self.write_audit(
+                f"USER={user} ACTION=PRODUCT_BULK_IMPORT path={csv_path} mode={mode} "
+                f"added={summary['added']} updated={summary['updated']} skipped={summary['skipped']} "
+                f"errors={len(summary['errors'])}"
+            )
+
+            return summary
+
+        except FileNotFoundError:
+            summary["errors"].apend("CSV file not found.")
+            return summary
+        except Exception as e:
+            summary["errors"].append(f"Failed to read CSV: {str(e)}")
+            return summary
