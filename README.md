@@ -18,7 +18,7 @@ This README explains **how to**:
 - Internet access (only needed to install packages if required)
 
 ### Optional but recommended
-- **VS Code** (with Python extension) or **PyCharm**
+ **PyCharm**
 - **Git** (only needed if you want to `git clone` instead of downloading a ZIP)
 
 ---
@@ -27,21 +27,21 @@ This README explains **how to**:
 
 You can do this in **either** of two ways:
 
-### Option A — Download ZIP + Uncompress (easiest)
+### Download ZIP + Uncompress 
 1. Open the repo page in a browser:
    - https://github.com/ao311-lei/CO3095StockControl
 2. Click **Code** → **Download ZIP**
-3. Save it somewhere you can find easily (e.g. `Documents`)
+3. Save it 
 4. Right-click the `.zip` file → **Extract All…**
 5. Choose a folder location (e.g. `Documents\CO3095StockControl`) → **Extract**
 
-After extraction you should see files like:
+After extraction you should see files :
 - `main.py`
 - `src/` (folder)
 - `README.md` (this file, or your updated version)
 
-### Option B — Clone using Git (cleanest)
-1. Open **Command Prompt** (or PowerShell)
-2. Choose a folder (example below uses Documents):
+### Clone using Git 
+1. Open **Command Prompt** 
+2. Choose a folder 
    ```bash
    cd %USERPROFILE%\Documents
