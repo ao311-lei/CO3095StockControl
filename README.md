@@ -45,3 +45,12 @@ After extraction you should see files :
 2. Choose a folder 
    ```bash
    cd %USERPROFILE%\Documents
+
+All test cases are implemented using **pytest**.
+
+Before running tests, ensure the project root is the current directory.
+
+### Set PYTHONPATH (required)
+#### Windows (Command Prompt)
+```bash
+set PYTHONPATH=.;src
