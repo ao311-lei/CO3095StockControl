@@ -1,4 +1,4 @@
-from Repo.budget_repo import BudgetRepo
+from  Repo.budget_repo import BudgetRepo
 
 class BudgetService:
     def __init__(self, budget_repo: BudgetRepo):
@@ -92,7 +92,7 @@ class BudgetService:
 
     def add_spend(self, amount):
         month_key, budget, spent = self._check_current_month()
-        spent = float(spent)
-
-        spent += float(budget)
+        if budget is None:
+            return "No budget set."
+        spent = float(spent) + float(amount)
         self.budget_repo.save_budget_record(month_key, budget, spent)
