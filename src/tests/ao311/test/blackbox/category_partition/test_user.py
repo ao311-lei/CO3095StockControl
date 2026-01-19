@@ -6,7 +6,7 @@ Tooling: TSLGenerator (frames) + unittest (execution)
 """
 
 import unittest
-from src.model.user import User
+from model.user import User
 
 
 class TestUserInitRoleTSL(unittest.TestCase):

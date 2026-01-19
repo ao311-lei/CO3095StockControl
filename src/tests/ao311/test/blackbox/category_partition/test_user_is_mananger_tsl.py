@@ -5,7 +5,7 @@ TSL spec: specs/user_is_manager.tsl
 """
 
 import unittest
-from src.model.user import User
+from model.user import User
 
 
 class TestUserIsManagerTSL(unittest.TestCase):
