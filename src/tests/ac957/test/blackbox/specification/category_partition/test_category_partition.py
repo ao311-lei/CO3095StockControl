@@ -536,7 +536,7 @@ class TestProductServiceCategoryPartition(unittest.TestCase):
 
 
 # =========================
-# PurchaseOrderService tests (no dummy repos/products)
+# PurchaseOrderService tests
 # =========================
 
 class DummyPurchaseOrder:

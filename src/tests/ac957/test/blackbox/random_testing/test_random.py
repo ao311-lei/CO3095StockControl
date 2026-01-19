@@ -16,7 +16,7 @@ from Service.purchase_order_service import PurchaseOrderService
 
 class TestRandomBlackBox(unittest.TestCase):
     # -------------------------
-    # BudgetRepo random tests (REAL repo, temp file)
+    # BudgetRepo random_testing tests (REAL repo, temp file)
     # -------------------------
     def test_budget_repo_random_black_box(self):
         rng = random.Random()
@@ -58,7 +58,7 @@ class TestRandomBlackBox(unittest.TestCase):
                     pass
 
     # -------------------------
-    # BudgetService random tests (REAL service + temp repo)
+    # BudgetService random_testing tests (REAL service + temp repo)
     # -------------------------
     def test_budget_service_random_black_box(self):
         rng = random.Random()
@@ -97,7 +97,7 @@ class TestRandomBlackBox(unittest.TestCase):
                     pass
 
     # -------------------------
-    # FavouriteRepo random tests (REAL repo, temp file)
+    # FavouriteRepo random_testing tests (REAL repo, temp file)
     # -------------------------
     def test_favourite_repo_random_black_box(self):
         rng = random.Random()
@@ -126,7 +126,7 @@ class TestRandomBlackBox(unittest.TestCase):
                 pass
 
     # -------------------------
-    # FavouriteService random tests (REAL service, MagicMock deps)
+    # FavouriteService random_testing tests (REAL service, MagicMock deps)
     # -------------------------
     def test_favourite_service_random_black_box(self):
         rng = random.Random()
@@ -186,7 +186,7 @@ class TestRandomBlackBox(unittest.TestCase):
                     pass
 
     # -------------------------
-    # ProductService random tests (MagicMock repo + MagicMock products)
+    # ProductService random_testing tests (MagicMock repo + MagicMock products)
     # -------------------------
     def test_product_service_random_black_box(self):
         rng = random.Random()
@@ -254,7 +254,7 @@ class TestRandomBlackBox(unittest.TestCase):
                 pass
 
     # -------------------------
-    # PurchaseOrderService random tests (MagicMock deps)
+    # PurchaseOrderService random_testing tests (MagicMock deps)
     # -------------------------
     def test_purchase_order_service_random_black_box(self):
         rng = random.Random()
